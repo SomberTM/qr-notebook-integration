@@ -11,25 +11,29 @@ import {
 } from "@/components/ui/form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import * as z from "zod";
 import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-
-const printerForm = z.object({
-	ip: z.string().ip({ version: "v4" }),
-	name: z.string().min(1).max(64),
-});
-type PrinterForm = z.infer<typeof printerForm>;
+import {
+	createPrinterSchema,
+	type CreatePrinterSchema,
+} from "@/db/schema/printers";
+import { SubmitButton } from "./submit-form-button";
+import { createPrinterAction } from "@/db/actions/printers";
+import { toast } from "sonner";
 
 export function PrinterForm() {
-	const form = useForm<PrinterForm>({
-		resolver: zodResolver(printerForm),
+	const form = useForm<CreatePrinterSchema>({
+		resolver: zodResolver(createPrinterSchema),
 	});
+	const isSubmitting = form.formState.isSubmitting;
 
-	function onSubmit(values: PrinterForm) {
-		// Do something with the form values.
-		// ✅ This will be type-safe and validated.
-		console.log(values);
+	async function onSubmit(values: CreatePrinterSchema) {
+		const result = await createPrinterAction(values);
+		if (result.success) {
+			toast("New printer successfully created!");
+		} else {
+			toast("Failed to create printer. Please try again later");
+		}
+		form.reset({});
 	}
 
 	return (
@@ -38,23 +42,6 @@ export function PrinterForm() {
 				onSubmit={form.handleSubmit(onSubmit)}
 				className="flex flex-col gap-4"
 			>
-				<FormField
-					control={form.control}
-					name="ip"
-					render={({ field }) => (
-						<FormItem className="flex flex-col justify-start text-left">
-							<FormLabel>Ip Address</FormLabel>
-							<FormControl>
-								<Input placeholder="192.0.0.1" {...field} />
-							</FormControl>
-							<FormDescription>
-								This is the ip address that we will use to communicate with the
-								printer
-							</FormDescription>
-							<FormMessage />
-						</FormItem>
-					)}
-				/>
 				<FormField
 					control={form.control}
 					name="name"
@@ -72,9 +59,30 @@ export function PrinterForm() {
 						</FormItem>
 					)}
 				/>
-				<Button className="mt-8" type="submit">
+				<FormField
+					control={form.control}
+					name="ip"
+					render={({ field }) => (
+						<FormItem className="flex flex-col justify-start text-left">
+							<FormLabel>Ip Address</FormLabel>
+							<FormControl>
+								<Input placeholder="192.0.0.1" {...field} />
+							</FormControl>
+							<FormDescription>
+								This is the ip address that we will use to communicate with the
+								printer
+							</FormDescription>
+							<FormMessage />
+						</FormItem>
+					)}
+				/>
+				<SubmitButton
+					loading={isSubmitting}
+					loadingValue="Creating printer..."
+					className="mt-2"
+				>
 					Submit
-				</Button>
+				</SubmitButton>
 			</form>
 		</Form>
 	);
