@@ -5,11 +5,15 @@ Steps to run
 
 1. Clone the repo to your local machine
 2. cd into the repo
-3. Run the following commands
+3. Install packages with `pnpm install`
 
-```
-pnpm install
-pnpm run dev
-```
+Setup database
+
+1. If you haven't already create a file called `.env.local`
+2. Set `CONNECTION_STRING="<insert-postgresql-connection-string>"`
+3. Run `pnpm run dbpush`. This will simply push the current schema to the database overwriting an existing tables.
+
+Finally,
+`pnpm run dev`
 
 Navigate to `localhost:3000` in your browser
