@@ -76,6 +76,26 @@ export function PrinterForm() {
 						</FormItem>
 					)}
 				/>
+				<FormField
+					control={form.control}
+					name="dpi"
+					render={({ field }) => (
+						<FormItem className="flex flex-col justify-start text-left">
+							<FormLabel>DPI (Dots Per Inch)</FormLabel>
+							<FormControl>
+								<Input placeholder="203" {...field} />
+							</FormControl>
+							<FormDescription>
+								This is a printer specific setting and will depend on the
+								printhead in your target printer. This value is useful as we
+								will use it determine label sizes in the label editor. The
+								default value we provide is 203 DPI as it is a common printhead
+								size.
+							</FormDescription>
+							<FormMessage />
+						</FormItem>
+					)}
+				/>
 				<SubmitButton
 					loading={isSubmitting}
 					loadingValue="Creating printer..."

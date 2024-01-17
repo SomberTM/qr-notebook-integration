@@ -1,1 +1,2 @@
-export * from "./printers"
+export * from "./printers";
+export * from "./labels";

@@ -1,23 +1,21 @@
 import LabelEditor from "@/components/editor";
-import {
-	ResizableHandle,
-	ResizablePanel,
-	ResizablePanelGroup,
-} from "@/components/ui/resizable";
-import { ArrowLeft } from "lucide-react";
-import Link from "next/link";
+import db from "@/db";
+import { printers as printersTable } from "@/db/schema";
 
-export default function Editor() {
+import {
+	ResizablePanelGroup,
+	ResizablePanel,
+	ResizableHandle,
+} from "@/components/ui/resizable";
+import { LabelEditorSidebar } from "@/components/editor/sidebar";
+
+export default async function Editor() {
+	const printers = await db.select().from(printersTable);
+
 	return (
 		<ResizablePanelGroup direction="horizontal" className="min-h-[100dvh]">
-			<ResizablePanel defaultSize={20} className="border flex flex-col gap-8">
-				<header className="p-4">
-					<nav>
-						<Link href="/" className="flex gap-2">
-							<ArrowLeft /> Home
-						</Link>
-					</nav>
-				</header>
+			<ResizablePanel defaultSize={20} className="p-8">
+				<LabelEditorSidebar printers={printers} />
 			</ResizablePanel>
 			<ResizableHandle />
 			<ResizablePanel className="p-32 z-0 bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] [background-size:16px_16px]">

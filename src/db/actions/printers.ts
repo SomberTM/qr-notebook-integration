@@ -8,6 +8,7 @@ import { CreatePrinterSchema, Printer, printers } from "../schema";
 export async function createPrinterAction({
 	name,
 	ip,
+	dpi,
 }: CreatePrinterSchema): Promise<FormActionResponse<Printer>> {
 	try {
 		const [printer] = await db
@@ -15,6 +16,7 @@ export async function createPrinterAction({
 			.values({
 				name,
 				ip,
+				dpi,
 			})
 			.returning();
 
