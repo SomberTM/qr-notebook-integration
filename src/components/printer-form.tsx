@@ -14,15 +14,23 @@ import { useForm } from "react-hook-form";
 import { Input } from "@/components/ui/input";
 import {
 	createPrinterSchema,
+	type Printer,
 	type CreatePrinterSchema,
 } from "@/db/schema/printers";
 import { SubmitButton } from "./submit-form-button";
 import { createPrinterAction } from "@/db/actions/printers";
 import { toast } from "sonner";
 
-export function PrinterForm() {
+interface PrinterFormProps {
+	onCreate?: (printer: Printer) => void;
+}
+
+export function PrinterForm(props: PrinterFormProps) {
 	const form = useForm<CreatePrinterSchema>({
 		resolver: zodResolver(createPrinterSchema),
+		defaultValues: {
+			dpi: 203,
+		},
 	});
 	const isSubmitting = form.formState.isSubmitting;
 
@@ -30,6 +38,7 @@ export function PrinterForm() {
 		const result = await createPrinterAction(values);
 		if (result.success) {
 			toast("New printer successfully created!");
+			props.onCreate?.(result.data);
 		} else {
 			toast("Failed to create printer. Please try again later");
 		}
@@ -83,7 +92,10 @@ export function PrinterForm() {
 						<FormItem className="flex flex-col justify-start text-left">
 							<FormLabel>DPI (Dots Per Inch)</FormLabel>
 							<FormControl>
-								<Input placeholder="203" {...field} />
+								<Input
+									placeholder="203"
+									{...form.register("dpi", { valueAsNumber: true })}
+								/>
 							</FormControl>
 							<FormDescription>
 								This is a printer specific setting and will depend on the

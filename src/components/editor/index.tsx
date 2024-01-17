@@ -175,8 +175,8 @@ function LabelEditor({
 					className="relative shadow-border shadow-lg bg-white"
 					style={{ width, height }}
 				>
-					{canvasData.map((canvas, idx) => {
-						return <CanvasComponent key={idx} {...canvas} />;
+					{canvasData.map((data, idx) => {
+						return <CanvasComponent key={idx} {...data} />;
 					})}
 				</div>
 			</CanvasContext.Provider>

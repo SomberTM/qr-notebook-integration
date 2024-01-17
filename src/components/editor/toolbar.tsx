@@ -3,6 +3,13 @@
 import React, { useContext } from "react";
 import { CanvasContext } from "./index";
 import { Button } from "../ui/button";
+import {
+	Select,
+	SelectContent,
+	SelectItem,
+	SelectTrigger,
+	SelectValue,
+} from "../ui/select";
 
 export const sizeList = [
 	"8px",
