@@ -98,7 +98,7 @@ function LabelEditor({
 		setActiveSelection(new Set(activeSelection));
 	};
 
-	const deleteElement = useCallback(() => {
+	const deleteSelectedElements = useCallback(() => {
 		setCanvasData([
 			...canvasData.filter((data) => {
 				if (data.id && activeSelection.has(data.id)) {
@@ -111,9 +111,9 @@ function LabelEditor({
 		setActiveSelection(new Set(activeSelection));
 	}, [activeSelection, canvasData]);
 
-	const selectAllElement = useCallback(() => {
+	const selectAllElements = useCallback(() => {
 		isSelectAll.current = true;
-		canvasData.map((data) => activeSelection.add(data.id || ""));
+		for (const data of canvasData) activeSelection.add(data.id || "");
 		setActiveSelection(new Set(activeSelection));
 	}, [activeSelection, canvasData]);
 
@@ -135,13 +135,13 @@ function LabelEditor({
 	const handleKeyDown = useCallback(
 		(event: KeyboardEvent) => {
 			if (event.key === "Delete") {
-				deleteElement();
+				deleteSelectedElements();
 			} else if (["a", "A"].includes(event.key) && event.ctrlKey) {
 				event.preventDefault();
-				selectAllElement();
+				selectAllElements();
 			}
 		},
-		[deleteElement, selectAllElement]
+		[deleteSelectedElements, selectAllElements]
 	);
 
 	const outSideClickHandler = () => {
