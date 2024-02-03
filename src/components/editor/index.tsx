@@ -172,6 +172,7 @@ function LabelEditor({
 			<CanvasContext.Provider value={context}>
 				<Toolbar isEditEnable={enableQuillToolbar} />
 				<div
+					id="labelEditorWhiteCanvas"
 					className="relative shadow-border shadow-lg bg-white"
 					style={{ width, height }}
 				>

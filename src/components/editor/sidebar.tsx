@@ -38,6 +38,8 @@ import {
 	TooltipTrigger,
 } from "../ui/tooltip";
 
+import domtoimage from 'dom-to-image';
+
 // Converting label size to pixels
 // different printers have different DPI (dots per inch)
 // we ask for this value when a user creates a printer.
@@ -68,6 +70,21 @@ export function LabelEditorSidebar(props: LabelEditorSidebarProps) {
 		useState(false);
 
 	async function onSubmit(values: CreateLabelSchema) {}
+	
+	const captureCanvas = () => {
+		const canvasElement = document.getElementById('labelEditorWhiteCanvas');
+		if (canvasElement) {
+			domtoimage.toJpeg(canvasElement, { quality: 0.95 })
+				.then(function (dataUrl: string) {
+					var link = document.createElement('a');
+					link.download = 'label.jpeg';
+					link.href = dataUrl;
+					link.click();
+				});
+		} else {
+			console.log("No canvas")
+		}
+	}
 
 	return (
 		<Dialog
@@ -195,6 +212,14 @@ export function LabelEditorSidebar(props: LabelEditorSidebarProps) {
 								);
 							}}
 						/>
+					</div>
+					<div>
+						<button 
+							onClick={captureCanvas} 
+							className="screenshot-button"
+      					>
+        					Capture Canvas
+      					</button>
 					</div>
 				</form>
 			</Form>
