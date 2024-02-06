@@ -5,94 +5,61 @@
  * https://codesandbox.io/p/sandbox/react-canvas-editor-1qrj5?file=%2Fsrc%2FCanvasContainer.tsx%3A130%2C31
  */
 
-import React, { useCallback, useRef, useState } from "react";
-import CanvasComponent from "./canvas-component";
+import React, {
+	useCallback,
+	useContext,
+	useEffect,
+	useRef,
+	useState,
+} from "react";
 import Toolbar from "./toolbar";
 
-export const CanvasContext = React.createContext<ICanvasContext>({});
-
-export interface ICanvasData {
-	component?: string;
-	id?: string;
-	position?: { top: number; left: number };
-	dimension?: { width: string; height: string };
-	content?: string;
-	type: string;
-}
-
-export interface ICanvasComponent {
-	position?: { top: number; left: number };
-	dimension?: { width: string; height: string };
-	content?: string;
-	id?: string;
-	type: string;
-	isReadOnly?: boolean;
-}
-
-export interface ICanvasContext {
-	state?: {
-		canvasData: ICanvasData[];
-		activeSelection: Set<string>;
-		enableQuillToolbar: boolean;
-	};
-	actions?: {
-		setCanvasData: React.Dispatch<React.SetStateAction<ICanvasData[]>>;
-		setActiveSelection: React.Dispatch<React.SetStateAction<Set<string>>>;
-		updateCanvasData: (data: Partial<ICanvasComponent>) => void;
-		addElement: (type: string) => void;
-		setEnableQuillToolbar: (state: boolean) => void;
-	};
-}
-
-const getInitialData = (data: any[], type: string = "TEXT") => {
-	return {
-		type: type,
-		id: `${type}__${Date.now()}__${data.length}`,
-		position: {
-			top: 100,
-			left: 100,
-		},
-		dimension: {
-			width: "150",
-			height: type === "TEXT" ? "50" : "150",
-		},
-		content: type === "TEXT" ? "Sample Text" : "",
-	};
-};
+import { Stage, Layer, Arrow } from "react-konva";
+import { CanvasElement, ElementType, getInitialData } from "./utils";
+import { CanvasContext } from "./context";
+import { getComponent } from "./elements";
 
 interface LabelEditorProps {
-	width: React.CSSProperties["width"];
-	height: React.CSSProperties["height"];
+	width: number;
+	length: number;
+	onDataChange?: (data: CanvasElement[]) => void;
 }
 
 function LabelEditor({
 	width,
-	height,
+	length,
+	onDataChange,
 	...props
 }: LabelEditorProps & React.ComponentPropsWithoutRef<"div">) {
-	const [canvasData, setCanvasData] = useState<ICanvasData[]>([]);
+	const [canvasData, setCanvasData] = useState<CanvasElement[]>([]);
 	const [activeSelection, setActiveSelection] = useState<Set<string>>(
 		new Set()
 	);
-	const [enableQuillToolbar, setEnableQuillToolbar] = useState<boolean>(false);
+
+	useEffect(() => {
+		onDataChange?.(canvasData);
+	}, [onDataChange, canvasData]);
 
 	const containerRef = useRef<HTMLDivElement>(null);
 	const isSelectAll = useRef<boolean>(false);
 
-	const updateCanvasData = (data: Partial<ICanvasComponent>) => {
-		const currentDataIndex =
-			canvasData.findIndex((canvas) => canvas.id === data.id) ?? -1;
-		const updatedData = { ...canvasData?.[currentDataIndex], ...data };
-		canvasData.splice(currentDataIndex, 1, updatedData);
-		setCanvasData([...(canvasData || [])]);
+	const [isToolbarHovered, setIsToolbarHovered] = useState(false);
+
+	const updateCanvasData = (data: Partial<CanvasElement>) => {
+		setCanvasData((previousData) => {
+			const currentDataIndex =
+				previousData.findIndex((canvas) => canvas.id === data.id) ?? -1;
+			const updatedData = { ...previousData?.[currentDataIndex], ...data };
+			previousData.splice(currentDataIndex, 1, updatedData as CanvasElement);
+
+			const newData = [...(previousData || [])];
+			return newData;
+		});
 	};
 
-	const addElement = (type: string) => {
+	const addElement = (type: ElementType) => {
 		const defaultData = getInitialData(canvasData, type);
-		setCanvasData((data) => [
-			...data,
-			{ ...defaultData, type: type ?? "TEXT" },
-		]);
+		setCanvasData((data) => [...data, defaultData]);
 		activeSelection.clear();
 		activeSelection.add(defaultData.id);
 		setActiveSelection(new Set(activeSelection));
@@ -117,31 +84,32 @@ function LabelEditor({
 		setActiveSelection(new Set(activeSelection));
 	}, [activeSelection, canvasData]);
 
-	const context: ICanvasContext = {
+	const context: CanvasContext = {
 		actions: {
+			setIsToolbarHovered,
 			setCanvasData,
 			setActiveSelection,
 			updateCanvasData,
 			addElement,
-			setEnableQuillToolbar,
 		},
 		state: {
+			isToolbarHovered,
 			canvasData,
 			activeSelection,
-			enableQuillToolbar,
 		},
 	};
 
 	const handleKeyDown = useCallback(
 		(event: KeyboardEvent) => {
-			if (event.key === "Delete") {
-				deleteSelectedElements();
-			} else if (["a", "A"].includes(event.key) && event.ctrlKey) {
+			// if (event.key === "Delete") {
+			// 	deleteSelectedElements();
+			// } else
+			if (["a", "A"].includes(event.key) && event.ctrlKey) {
 				event.preventDefault();
 				selectAllElements();
 			}
 		},
-		[deleteSelectedElements, selectAllElements]
+		[/*deleteSelectedElements,*/ selectAllElements]
 	);
 
 	const outSideClickHandler = () => {
@@ -168,17 +136,21 @@ function LabelEditor({
 	}, [handleKeyDown, handleMouseDown]);
 
 	return (
-		<div ref={containerRef} {...props}>
+		<div className="flex flex-col gap-2" ref={containerRef} {...props}>
 			<CanvasContext.Provider value={context}>
-				<Toolbar isEditEnable={enableQuillToolbar} />
-				<div
-					className="relative shadow-border shadow-lg bg-white"
-					style={{ width, height }}
+				<Toolbar />
+				<Stage
+					className="relative shadow-border shadow-xl bg-white"
+					width={length}
+					height={width}
 				>
-					{canvasData.map((data, idx) => {
-						return <CanvasComponent key={idx} {...data} />;
-					})}
-				</div>
+					<Layer>
+						{canvasData.map((data, idx) => {
+							const Component = getComponent(data.type);
+							return <Component key={idx} {...data} />;
+						})}
+					</Layer>
+				</Stage>
 			</CanvasContext.Provider>
 		</div>
 	);

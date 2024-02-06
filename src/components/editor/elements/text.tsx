@@ -1,67 +1,80 @@
 "use client";
 
-import React, { useContext, useMemo } from "react";
-import ReactHtmlParser from "react-html-parser";
-import { Quill } from "react-quill";
-import "react-quill/dist/quill.snow.css";
-import { CanvasContext, ICanvasComponent } from "../index";
-import { fontList, sizeList } from "../toolbar";
-import dynamic from "next/dynamic";
+import React, { useEffect, useRef, useState } from "react";
+import { Textarea } from "@/components/ui/textarea";
+import { Text } from "react-konva";
+import { Html } from "react-konva-utils";
+import { TextElement } from "../utils";
+import { useCanvasContext } from "../context";
 
-const Size = Quill.import("attributors/style/size");
-Size.whitelist = sizeList;
+const TextElement = (props: TextElement) => {
+	const { content, position, dimension, modifiers, id } = props;
+	const { state, actions } = useCanvasContext();
 
-const Font = Quill.import("attributors/style/font");
-Font.whitelist = fontList;
+	const textareaRef = useRef<React.ComponentRef<typeof Textarea>>(null);
 
-Quill.register(Font, true);
-Quill.register(Size, true);
+	useEffect(() => {
+		if (!state.activeSelection.has(id) || !textareaRef.current) return;
+		textareaRef.current.focus();
+	}, [state, id]);
 
-const TextElement = (props: ICanvasComponent) => {
-	const { content, id, isReadOnly } = props;
-	const { actions } = useContext(CanvasContext);
-	const editorRef = React.useRef(null);
-	const ReactQuill = useMemo(
-		() => dynamic(() => import("react-quill"), { ssr: false }),
-		[]
-	);
+	if (state.activeSelection.has(id))
+		return (
+			<Html>
+				<Textarea
+					ref={textareaRef}
+					// negative margin helps align visual text vs editing text better
 
-	const updateEditorValue = (value: string) => {
-		actions?.updateCanvasData({ id, content: value });
-	};
+					className="absolute p-0 rounded-none border-none outline-none -mt-1 resize-none"
+					style={{
+						left: `${position.left}px`,
+						top: `${position.top}px`,
+						width: `${dimension.width}px`,
+						height: `${dimension.height}px`,
+						...modifiers,
+					}}
+					onBlur={(event) => {
+						if (state.isToolbarHovered) {
+							event.preventDefault();
+							event.stopPropagation();
+							return;
+						}
 
-	const modules = {
-		toolbar: "#toolbar",
-	};
+						actions.setActiveSelection((previousSelection) => {
+							previousSelection.delete(id);
+							return new Set(previousSelection);
+						});
+					}}
+					value={content.value}
+					onChange={(event) =>
+						actions.updateCanvasData({
+							id,
+							content: { ...content, value: event.target.value },
+						})
+					}
+				/>
+			</Html>
+		);
 
 	return (
-		<>
-			<div>
-				{isReadOnly ? (
-					<div
-						className="ql-editor"
-						style={{
-							fontFamily: "Arial",
-							fontSize: "13px",
-							padding: 0,
-						}}
-					>
-						{ReactHtmlParser(content || "")}
-					</div>
-				) : (
-					<ReactQuill
-						// @ts-expect-error
-						ref={editorRef}
-						readOnly={isReadOnly}
-						theme="snow"
-						className="quill-container"
-						modules={modules}
-						value={content}
-						onChange={updateEditorValue}
-					/>
-				)}
-			</div>
-		</>
+		<Text
+			text={content.value === "" ? content.placeholder : content.value}
+			x={position.left}
+			y={position.top}
+			draggable
+			onDragMove={(event) => {
+				actions.updateCanvasData({
+					id,
+					position: { left: event.target.x(), top: event.target.y() },
+				});
+			}}
+			onDblClick={() => {
+				actions.setActiveSelection((previousSelection) => {
+					previousSelection.add(id);
+					return new Set(previousSelection);
+				});
+			}}
+		/>
 	);
 };
 

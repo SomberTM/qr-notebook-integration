@@ -12,6 +12,7 @@ export const labels = pgTable("labels", {
 	data: jsonb("data").default({}),
 	widthIn: real("width_in").notNull(),
 	lengthIn: real("length_in").notNull(),
+	zpl: text("zpl"),
 });
 
 export type Label = typeof labels.$inferSelect;
