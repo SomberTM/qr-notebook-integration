@@ -1,24 +1,41 @@
 "use client";
 
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { Textarea } from "@/components/ui/textarea";
 import { Text } from "react-konva";
 import { Html } from "react-konva-utils";
-import { TextElement } from "../utils";
-import { useCanvasContext } from "../context";
+import { type TextElement } from "../utils";
+import { useEditorContext } from "../context";
 
 const TextElement = (props: TextElement) => {
 	const { content, position, dimension, modifiers, id } = props;
-	const { state, actions } = useCanvasContext();
+	const { state, actions } = useEditorContext();
+	const [isEditing, setIsEditing] = useState(false);
 
 	const textareaRef = useRef<React.ComponentRef<typeof Textarea>>(null);
 
-	useEffect(() => {
-		if (!state.activeSelection.has(id) || !textareaRef.current) return;
-		textareaRef.current.focus();
-	}, [state, id]);
+	const addSelfToActiveSelection = useCallback(() => {
+		if (state.activeSelection.has(id)) return;
+		actions.setActiveSelection((previous) => {
+			previous.add(id);
+			return new Set(previous);
+		});
+	}, [id, state.activeSelection, actions]);
 
-	if (state.activeSelection.has(id))
+	const removeSelfFromActiveSelection = useCallback(() => {
+		if (!state.activeSelection.has(id)) return;
+		actions.setActiveSelection((previous) => {
+			previous.delete(id);
+			return new Set(previous);
+		});
+	}, [id, state.activeSelection, actions]);
+
+	useEffect(() => {
+		if (!isEditing || !textareaRef.current) return;
+		textareaRef.current.focus();
+	}, [state, isEditing, id]);
+
+	if (isEditing)
 		return (
 			<Html>
 				<Textarea
@@ -40,10 +57,7 @@ const TextElement = (props: TextElement) => {
 							return;
 						}
 
-						actions.setActiveSelection((previousSelection) => {
-							previousSelection.delete(id);
-							return new Set(previousSelection);
-						});
+						setIsEditing(false);
 					}}
 					value={content.value}
 					onChange={(event) =>
@@ -61,7 +75,20 @@ const TextElement = (props: TextElement) => {
 			text={content.value === "" ? content.placeholder : content.value}
 			x={position.left}
 			y={position.top}
+			width={dimension.width}
+			height={dimension.height}
+			onMouseOver={() => {
+				addSelfToActiveSelection();
+			}}
+			onMouseOut={() => {
+				console.log("leave");
+				removeSelfFromActiveSelection();
+			}}
 			draggable
+			onClick={() => {
+				if (isEditing) return;
+				addSelfToActiveSelection();
+			}}
 			onDragMove={(event) => {
 				actions.updateCanvasData({
 					id,
@@ -69,10 +96,8 @@ const TextElement = (props: TextElement) => {
 				});
 			}}
 			onDblClick={() => {
-				actions.setActiveSelection((previousSelection) => {
-					previousSelection.add(id);
-					return new Set(previousSelection);
-				});
+				setIsEditing(true);
+				actions.setActiveSelection(new Set());
 			}}
 		/>
 	);

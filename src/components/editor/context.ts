@@ -2,7 +2,7 @@ import React, { useContext, createContext } from "react";
 import { CanvasElement, ElementType } from "./utils";
 
 export const CanvasContext = createContext<CanvasContext | null>(null);
-export function useCanvasContext() {
+export function useEditorContext() {
 	const context = useContext(CanvasContext);
 	if (!context) throw new Error("Bad");
 	return context;

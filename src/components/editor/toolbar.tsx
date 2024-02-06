@@ -2,12 +2,20 @@
 
 import React from "react";
 import { Button } from "../ui/button";
-import { Bold, Italic, Type, Underline } from "lucide-react";
-import { useCanvasContext } from "./context";
+import {
+	AlignCenter,
+	AlignLeft,
+	AlignRight,
+	Bold,
+	Italic,
+	Type,
+	Underline,
+} from "lucide-react";
+import { useEditorContext } from "./context";
 import { ToggleGroup, ToggleGroupItem } from "../ui/toggle-group";
 
 export default function Toolbar() {
-	const { state, actions } = useCanvasContext();
+	const { state, actions } = useEditorContext();
 	const toolbarDisabled = state.activeSelection.size === 0;
 
 	return (
@@ -48,6 +56,33 @@ export default function Toolbar() {
 					aria-label="Toggle underline"
 				>
 					<Underline size={16} />
+				</ToggleGroupItem>
+			</ToggleGroup>
+			<ToggleGroup
+				type="single"
+				disabled={toolbarDisabled}
+				className="flex rounded-lg gap-0 bg-secondary"
+			>
+				<ToggleGroupItem
+					className="p-1 aspect-square rounded-r-none hover:bg-muted"
+					value="left"
+					aria-label="Align text left"
+				>
+					<AlignLeft size={16} />
+				</ToggleGroupItem>
+				<ToggleGroupItem
+					className="p-1 aspect-square rounded-none"
+					value="center"
+					aria-label="Align text center"
+				>
+					<AlignCenter size={16} />
+				</ToggleGroupItem>
+				<ToggleGroupItem
+					className="p-1 aspect-square rounded-l-none"
+					value="right"
+					aria-label="Align text right"
+				>
+					<AlignRight size={16} />
 				</ToggleGroupItem>
 			</ToggleGroup>
 		</div>

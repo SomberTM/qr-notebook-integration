@@ -255,6 +255,7 @@ export function LabelEditorSidebar({
 							let placeholder = "Select an existing label";
 							if (widthIn || lengthIn)
 								placeholder = `${filteredLabels.length} label(s) found with above dimensions`;
+							if (filteredLabels.length === 0) placeholder = "No labels found";
 
 							return (
 								<FormItem>
@@ -267,6 +268,7 @@ export function LabelEditorSidebar({
 													selectExistingLabel(value);
 													field.onChange(value);
 												}}
+												disabled={filteredLabels.length === 0}
 											>
 												<SelectTrigger>
 													<SelectValue placeholder={placeholder} />

@@ -5,19 +5,14 @@
  * https://codesandbox.io/p/sandbox/react-canvas-editor-1qrj5?file=%2Fsrc%2FCanvasContainer.tsx%3A130%2C31
  */
 
-import React, {
-	useCallback,
-	useContext,
-	useEffect,
-	useRef,
-	useState,
-} from "react";
+import React, { useRef, useState } from "react";
 import Toolbar from "./toolbar";
 
-import { Stage, Layer, Arrow } from "react-konva";
+import { Stage, Layer } from "react-konva";
 import { CanvasElement, ElementType, getInitialData } from "./utils";
 import { CanvasContext } from "./context";
 import { getComponent } from "./elements";
+import { Html } from "react-konva-utils";
 
 interface LabelEditorProps {
 	width: number;
@@ -33,13 +28,11 @@ function LabelEditor({
 	onDataChange,
 	...props
 }: LabelEditorProps & React.ComponentPropsWithoutRef<"div">) {
-	// const [canvasData, setCanvasData] = useState<CanvasElement[]>([]);
 	const [activeSelection, setActiveSelection] = useState<Set<string>>(
 		new Set()
 	);
 
 	const containerRef = useRef<HTMLDivElement>(null);
-	const isSelectAll = useRef<boolean>(false);
 
 	const [isToolbarHovered, setIsToolbarHovered] = useState(false);
 
@@ -62,25 +55,6 @@ function LabelEditor({
 		setActiveSelection(new Set(activeSelection));
 	};
 
-	// const deleteSelectedElements = useCallback(() => {
-	// 	setCanvasData([
-	// 		...canvasData.filter((data) => {
-	// 			if (data.id && activeSelection.has(data.id)) {
-	// 				activeSelection.delete(data.id);
-	// 				return false;
-	// 			}
-	// 			return true;
-	// 		}),
-	// 	]);
-	// 	setActiveSelection(new Set(activeSelection));
-	// }, [activeSelection, canvasData]);
-
-	// const selectAllElements = useCallback(() => {
-	// 	isSelectAll.current = true;
-	// 	for (const data of canvasData) activeSelection.add(data.id || "");
-	// 	setActiveSelection(new Set(activeSelection));
-	// }, [activeSelection, canvasData]);
-
 	const context: CanvasContext = {
 		actions: {
 			setIsToolbarHovered,
@@ -95,42 +69,6 @@ function LabelEditor({
 		},
 	};
 
-	// const handleKeyDown = useCallback(
-	// 	(event: KeyboardEvent) => {
-	// 		// if (event.key === "Delete") {
-	// 		// 	deleteSelectedElements();
-	// 		// } else
-	// 		if (["a", "A"].includes(event.key) && event.ctrlKey) {
-	// 			event.preventDefault();
-	// 			selectAllElements();
-	// 		}
-	// 	},
-	// 	[/*deleteSelectedElements,*/ selectAllElements]
-	// );
-
-	const outSideClickHandler = () => {
-		isSelectAll.current = false;
-		setActiveSelection(new Set());
-	};
-
-	const handleMouseDown = useCallback((event: any) => {
-		if (!isSelectAll.current) {
-			return;
-		}
-
-		outSideClickHandler();
-		isSelectAll.current = false;
-	}, []);
-
-	// React.useEffect(() => {
-	// 	document.addEventListener("keydown", handleKeyDown);
-	// 	document.addEventListener("mousedown", handleMouseDown);
-	// 	return () => {
-	// 		document.removeEventListener("keydown", handleKeyDown);
-	// 		document.removeEventListener("mousedown", handleMouseDown);
-	// 	};
-	// }, [handleKeyDown, handleMouseDown]);
-
 	return (
 		<div className="flex flex-col gap-2" ref={containerRef} {...props}>
 			<CanvasContext.Provider value={context}>
@@ -143,7 +81,19 @@ function LabelEditor({
 					<Layer>
 						{data.map((data, idx) => {
 							const Component = getComponent(data.type);
-							return <Component key={idx} {...data} />;
+							return (
+								<>
+									<Component key={data.id} {...data} />
+									{activeSelection.has(data.id) && (
+										<Html key={data.id + "-border"}>
+											<div
+												className="absolute content-none border pointer-events-none -m-1 border-black -z-10"
+												style={{ ...data.position, ...data.dimension }}
+											></div>
+										</Html>
+									)}
+								</>
+							);
 						})}
 					</Layer>
 				</Stage>
