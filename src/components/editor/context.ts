@@ -10,13 +10,12 @@ export function useCanvasContext() {
 
 export interface CanvasContext {
 	state: {
-		canvasData: CanvasElement[];
+		data: CanvasElement[];
 		activeSelection: Set<string>;
 		isToolbarHovered: boolean;
 	};
 	actions: {
 		setIsToolbarHovered: React.Dispatch<React.SetStateAction<boolean>>;
-		setCanvasData: React.Dispatch<React.SetStateAction<CanvasElement[]>>;
 		setActiveSelection: React.Dispatch<React.SetStateAction<Set<string>>>;
 		updateCanvasData: (data: Partial<CanvasElement>) => void;
 		addElement: (type: ElementType) => void;

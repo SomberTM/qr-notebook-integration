@@ -1,6 +1,6 @@
 "use client";
 
-import { CreateLabelSchema, Printer, createLabelSchema } from "@/db/schema";
+import { Label, Printer } from "@/db/schema";
 import {
 	Select,
 	SelectContent,
@@ -10,10 +10,8 @@ import {
 } from "../ui/select";
 import { useCallback, useEffect, useState } from "react";
 import { Input } from "../ui/input";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm, useFormContext } from "react-hook-form";
+import { useFormContext } from "react-hook-form";
 import {
-	Form,
 	FormControl,
 	FormDescription,
 	FormField,
@@ -22,7 +20,7 @@ import {
 	FormMessage,
 } from "../ui/form";
 import { Button } from "../ui/button";
-import { ChevronLeft, ChevronRight, PlusIcon } from "lucide-react";
+import { ChevronLeft, PlusIcon, X } from "lucide-react";
 import {
 	Dialog,
 	DialogContent,
@@ -51,6 +49,7 @@ import Link from "next/link";
 
 interface LabelEditorSidebarProps {
 	printers: Printer[];
+	labels: Label[];
 	collapsed?: boolean;
 	onWidthChange?(width: number, widthPx: number): void;
 	onLengthChange?(height: number, widthPx: number): void;
@@ -58,18 +57,32 @@ interface LabelEditorSidebarProps {
 
 export function LabelEditorSidebar({
 	printers,
+	labels,
 	collapsed,
 	onLengthChange,
 	onWidthChange,
 }: LabelEditorSidebarProps) {
-	const form = useFormContext();
-	const { designedForId } = form.watch();
+	const form = useFormContext<Partial<Label>>();
+	const { id, widthIn, lengthIn, designedForId } = form.watch();
 
 	const getPrinter = useCallback(
 		(id: string | null | undefined) =>
 			printers.find((printer) => printer.id === id),
 		[printers]
 	);
+
+	function selectExistingLabel(id?: string) {
+		// dont work :(
+		if (!id) return form.reset({ designedForId });
+
+		const label = labels.find((label) => label.id === id);
+		if (!label) return;
+
+		form.setValue("name", label.name);
+		form.setValue("widthIn", label.widthIn);
+		form.setValue("lengthIn", label.lengthIn);
+		form.setValue("data", label.data);
+	}
 
 	const [isCreatePrinterDialogOpen, setIsCreatePrinterDialogOpen] =
 		useState(false);
@@ -119,8 +132,8 @@ export function LabelEditorSidebar({
 										</SelectContent>
 									</Select>
 									<DialogTrigger asChild className="aspect-square">
-										<Button type="button" size="sm">
-											<PlusIcon />
+										<Button className="p-1 aspect-square">
+											<PlusIcon size={16} />
 										</Button>
 									</DialogTrigger>
 
@@ -144,8 +157,7 @@ export function LabelEditorSidebar({
 						control={form.control}
 						name="widthIn"
 						render={({ field }) => {
-							const printerId = designedForId;
-							const printer = getPrinter(printerId);
+							const printer = getPrinter(designedForId);
 							if (!printer) return <FormItem />;
 
 							return (
@@ -182,8 +194,7 @@ export function LabelEditorSidebar({
 						control={form.control}
 						name="lengthIn"
 						render={({ field }) => {
-							const printerId = designedForId;
-							const printer = getPrinter(printerId);
+							const printer = getPrinter(designedForId);
 							if (!printer) return <FormItem />;
 
 							return (
@@ -216,8 +227,105 @@ export function LabelEditorSidebar({
 							);
 						}}
 					/>
+					<FormField
+						control={form.control}
+						name="id"
+						render={({ field }) => {
+							const printer = getPrinter(designedForId);
+							if (!printer) return <FormItem />;
+
+							const filteredLabels = labels.filter((label) => {
+								if (!widthIn && !lengthIn) return true;
+
+								console.log(widthIn, label.widthIn, widthIn == label.widthIn);
+
+								if (
+									widthIn &&
+									lengthIn &&
+									widthIn == label.widthIn &&
+									lengthIn == label.lengthIn
+								)
+									return true;
+								if (widthIn && widthIn == label.widthIn) return true;
+								if (lengthIn && lengthIn == label.lengthIn) return true;
+
+								return false;
+							});
+
+							let placeholder = "Select an existing label";
+							if (widthIn || lengthIn)
+								placeholder = `${filteredLabels.length} label(s) found with above dimensions`;
+
+							return (
+								<FormItem>
+									<FormLabel>Existing Label</FormLabel>
+									<FormControl>
+										<div className="flex gap-2">
+											<Select
+												value={field.value}
+												onValueChange={(value) => {
+													selectExistingLabel(value);
+													field.onChange(value);
+												}}
+											>
+												<SelectTrigger>
+													<SelectValue placeholder={placeholder} />
+												</SelectTrigger>
+												<SelectContent>
+													{filteredLabels.map((label) => (
+														<SelectItem key={label.id} value={label.id}>
+															<TooltipProvider>
+																<Tooltip>
+																	<TooltipTrigger>{label.name}</TooltipTrigger>
+																	<TooltipContent>
+																		Width: {label.widthIn} (in), Length:{" "}
+																		{label.lengthIn} (in)
+																	</TooltipContent>
+																</Tooltip>
+															</TooltipProvider>
+														</SelectItem>
+													))}
+												</SelectContent>
+											</Select>
+											<Button className="p-1 aspect-square">
+												<X size={16} />
+											</Button>
+										</div>
+									</FormControl>
+									<FormDescription>
+										Select an existing label. If a width or length are provided
+										above, labels will be filtered based on those values
+									</FormDescription>
+								</FormItem>
+							);
+						}}
+					/>
+					<FormField
+						control={form.control}
+						name="name"
+						render={({ field }) => {
+							const printer = getPrinter(designedForId);
+							if (!printer) return <FormItem />;
+
+							return (
+								<FormItem>
+									<FormLabel>Label Name</FormLabel>
+									<FormControl>
+										<Input placeholder="My Label" {...field} />
+									</FormControl>
+									<FormDescription>
+										{!id && "Assign a descriptive name for this label"}
+										{id && "Update the currently selected labels name"}
+									</FormDescription>
+									<FormMessage />
+								</FormItem>
+							);
+						}}
+					/>
 				</div>
-				<Button type="submit">Save</Button>
+				<Button type="submit" disabled={!designedForId}>
+					Save
+				</Button>
 			</div>
 			{/* 
 				Dialog content needs to be out here since it contains a form. 

@@ -12,14 +12,17 @@ export const labels = pgTable("labels", {
 	data: jsonb("data").default({}),
 	widthIn: real("width_in").notNull(),
 	lengthIn: real("length_in").notNull(),
-	zpl: text("zpl"),
 });
 
 export type Label = typeof labels.$inferSelect;
 
 export const createLabelSchema = createInsertSchema(labels, {
 	name: (schema) => schema.name.min(1).max(64),
-	widthIn: (schema) => schema.widthIn.positive(),
-	lengthIn: (schema) => schema.lengthIn.positive(),
+	data: (schema) => schema.data,
+	widthIn: () => z.coerce.number().positive().min(0.1).max(10.0),
+	lengthIn: () => z.coerce.number().positive().min(0.1).max(10.0),
 });
 export type CreateLabelSchema = z.infer<typeof createLabelSchema>;
+
+export type UpdateLabelSchema = Partial<Omit<Label, "id">> &
+	Required<Pick<Label, "id">>;

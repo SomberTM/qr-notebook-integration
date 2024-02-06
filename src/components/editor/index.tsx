@@ -22,95 +22,91 @@ import { getComponent } from "./elements";
 interface LabelEditorProps {
 	width: number;
 	length: number;
-	onDataChange?: (data: CanvasElement[]) => void;
+	data: CanvasElement[];
+	onDataChange: (data: CanvasElement[]) => void;
 }
 
 function LabelEditor({
 	width,
 	length,
+	data,
 	onDataChange,
 	...props
 }: LabelEditorProps & React.ComponentPropsWithoutRef<"div">) {
-	const [canvasData, setCanvasData] = useState<CanvasElement[]>([]);
+	// const [canvasData, setCanvasData] = useState<CanvasElement[]>([]);
 	const [activeSelection, setActiveSelection] = useState<Set<string>>(
 		new Set()
 	);
-
-	useEffect(() => {
-		onDataChange?.(canvasData);
-	}, [onDataChange, canvasData]);
 
 	const containerRef = useRef<HTMLDivElement>(null);
 	const isSelectAll = useRef<boolean>(false);
 
 	const [isToolbarHovered, setIsToolbarHovered] = useState(false);
 
-	const updateCanvasData = (data: Partial<CanvasElement>) => {
-		setCanvasData((previousData) => {
-			const currentDataIndex =
-				previousData.findIndex((canvas) => canvas.id === data.id) ?? -1;
-			const updatedData = { ...previousData?.[currentDataIndex], ...data };
-			previousData.splice(currentDataIndex, 1, updatedData as CanvasElement);
+	const updateCanvasData = (updatingData: Partial<CanvasElement>) => {
+		const currentDataIndex =
+			data.findIndex((canvas) => canvas.id === updatingData.id) ?? -1;
+		const updatedData = { ...data?.[currentDataIndex], ...updatingData };
+		data.splice(currentDataIndex, 1, updatedData as CanvasElement);
 
-			const newData = [...(previousData || [])];
-			return newData;
-		});
+		const newData = [...(data || [])];
+
+		onDataChange(newData);
 	};
 
 	const addElement = (type: ElementType) => {
-		const defaultData = getInitialData(canvasData, type);
-		setCanvasData((data) => [...data, defaultData]);
+		const defaultData = getInitialData(data, type);
+		onDataChange([...data, defaultData]);
 		activeSelection.clear();
 		activeSelection.add(defaultData.id);
 		setActiveSelection(new Set(activeSelection));
 	};
 
-	const deleteSelectedElements = useCallback(() => {
-		setCanvasData([
-			...canvasData.filter((data) => {
-				if (data.id && activeSelection.has(data.id)) {
-					activeSelection.delete(data.id);
-					return false;
-				}
-				return true;
-			}),
-		]);
-		setActiveSelection(new Set(activeSelection));
-	}, [activeSelection, canvasData]);
+	// const deleteSelectedElements = useCallback(() => {
+	// 	setCanvasData([
+	// 		...canvasData.filter((data) => {
+	// 			if (data.id && activeSelection.has(data.id)) {
+	// 				activeSelection.delete(data.id);
+	// 				return false;
+	// 			}
+	// 			return true;
+	// 		}),
+	// 	]);
+	// 	setActiveSelection(new Set(activeSelection));
+	// }, [activeSelection, canvasData]);
 
-	const selectAllElements = useCallback(() => {
-		isSelectAll.current = true;
-		for (const data of canvasData) activeSelection.add(data.id || "");
-		setActiveSelection(new Set(activeSelection));
-	}, [activeSelection, canvasData]);
+	// const selectAllElements = useCallback(() => {
+	// 	isSelectAll.current = true;
+	// 	for (const data of canvasData) activeSelection.add(data.id || "");
+	// 	setActiveSelection(new Set(activeSelection));
+	// }, [activeSelection, canvasData]);
 
 	const context: CanvasContext = {
 		actions: {
 			setIsToolbarHovered,
-			setCanvasData,
 			setActiveSelection,
 			updateCanvasData,
 			addElement,
 		},
 		state: {
 			isToolbarHovered,
-			canvasData,
+			data,
 			activeSelection,
 		},
 	};
 
-	const handleKeyDown = useCallback(
-		(event: KeyboardEvent) => {
-			// if (event.key === "Delete") {
-			// 	deleteSelectedElements();
-			// } else
-			if (["a", "A"].includes(event.key) && event.ctrlKey) {
-				event.preventDefault();
-				selectAllElements();
-			}
-		},
-		[/*deleteSelectedElements,*/ selectAllElements]
-	);
+	// const handleKeyDown = useCallback(
+	// 	(event: KeyboardEvent) => {
+	// 		// if (event.key === "Delete") {
+	// 		// 	deleteSelectedElements();
+	// 		// } else
+	// 		if (["a", "A"].includes(event.key) && event.ctrlKey) {
+	// 			event.preventDefault();
+	// 			selectAllElements();
+	// 		}
+	// 	},
+	// 	[/*deleteSelectedElements,*/ selectAllElements]
+	// );
 
 	const outSideClickHandler = () => {
 		isSelectAll.current = false;
@@ -126,14 +122,14 @@ function LabelEditor({
 		isSelectAll.current = false;
 	}, []);
 
-	React.useEffect(() => {
-		document.addEventListener("keydown", handleKeyDown);
-		document.addEventListener("mousedown", handleMouseDown);
-		return () => {
-			document.removeEventListener("keydown", handleKeyDown);
-			document.removeEventListener("mousedown", handleMouseDown);
-		};
-	}, [handleKeyDown, handleMouseDown]);
+	// React.useEffect(() => {
+	// 	document.addEventListener("keydown", handleKeyDown);
+	// 	document.addEventListener("mousedown", handleMouseDown);
+	// 	return () => {
+	// 		document.removeEventListener("keydown", handleKeyDown);
+	// 		document.removeEventListener("mousedown", handleMouseDown);
+	// 	};
+	// }, [handleKeyDown, handleMouseDown]);
 
 	return (
 		<div className="flex flex-col gap-2" ref={containerRef} {...props}>
@@ -145,7 +141,7 @@ function LabelEditor({
 					height={width}
 				>
 					<Layer>
-						{canvasData.map((data, idx) => {
+						{data.map((data, idx) => {
 							const Component = getComponent(data.type);
 							return <Component key={idx} {...data} />;
 						})}
