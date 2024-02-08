@@ -12,10 +12,10 @@ export interface CanvasContext {
 	state: {
 		data: CanvasElement[];
 		activeSelection: Set<string>;
-		isToolbarHovered: boolean;
+		editing?: string;
 	};
 	actions: {
-		setIsToolbarHovered: React.Dispatch<React.SetStateAction<boolean>>;
+		setEditing: React.Dispatch<React.SetStateAction<string | undefined>>;
 		setActiveSelection: React.Dispatch<React.SetStateAction<Set<string>>>;
 		updateCanvasData: (data: Partial<CanvasElement>) => void;
 		addElement: (type: ElementType) => void;

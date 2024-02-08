@@ -8,33 +8,28 @@
 import React, { useRef, useState } from "react";
 import Toolbar from "./toolbar";
 
-import { Stage, Layer } from "react-konva";
+import Konva from "konva";
 import { CanvasElement, ElementType, getInitialData } from "./utils";
 import { CanvasContext } from "./context";
-import { getComponent } from "./elements";
-import { Html } from "react-konva-utils";
+import { Canvas } from "./canvas";
 
 interface LabelEditorProps {
-	width: number;
-	length: number;
 	data: CanvasElement[];
 	onDataChange: (data: CanvasElement[]) => void;
 }
 
 function LabelEditor({
-	width,
-	length,
 	data,
 	onDataChange,
+	children,
 	...props
-}: LabelEditorProps & React.ComponentPropsWithoutRef<"div">) {
+}: React.PropsWithChildren<
+	LabelEditorProps & React.ComponentPropsWithoutRef<"div">
+>) {
 	const [activeSelection, setActiveSelection] = useState<Set<string>>(
 		new Set()
 	);
-
-	const containerRef = useRef<HTMLDivElement>(null);
-
-	const [isToolbarHovered, setIsToolbarHovered] = useState(false);
+	const [editing, setEditing] = useState<string | undefined>();
 
 	const updateCanvasData = (updatingData: Partial<CanvasElement>) => {
 		const currentDataIndex =
@@ -57,49 +52,27 @@ function LabelEditor({
 
 	const context: CanvasContext = {
 		actions: {
-			setIsToolbarHovered,
 			setActiveSelection,
 			updateCanvasData,
 			addElement,
+			setEditing,
 		},
 		state: {
-			isToolbarHovered,
+			editing,
 			data,
 			activeSelection,
 		},
 	};
 
 	return (
-		<div className="flex flex-col gap-2" ref={containerRef} {...props}>
+		<div className="flex flex-col gap-2" {...props}>
 			<CanvasContext.Provider value={context}>
-				<Toolbar />
-				<Stage
-					className="relative shadow-border shadow-xl bg-white"
-					width={length}
-					height={width}
-				>
-					<Layer>
-						{data.map((data, idx) => {
-							const Component = getComponent(data.type);
-							return (
-								<>
-									<Component key={data.id} {...data} />
-									{activeSelection.has(data.id) && (
-										<Html key={data.id + "-border"}>
-											<div
-												className="absolute content-none border pointer-events-none -m-1 border-black -z-10"
-												style={{ ...data.position, ...data.dimension }}
-											></div>
-										</Html>
-									)}
-								</>
-							);
-						})}
-					</Layer>
-				</Stage>
+				{children}
 			</CanvasContext.Provider>
 		</div>
 	);
 }
 
+LabelEditor.Toolbar = Toolbar;
+LabelEditor.Canvas = Canvas;
 export default LabelEditor;

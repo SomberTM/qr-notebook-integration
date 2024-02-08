@@ -26,6 +26,7 @@
     "@tanstack/react-table": "^8.11.6",
     "@tiptap/extension-text-align": "^2.2.1",
     "@tiptap/extension-underline": "^2.2.1",
+    "canvas": "^2.11.2",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.0",
     "dotenv": "^16.3.1",

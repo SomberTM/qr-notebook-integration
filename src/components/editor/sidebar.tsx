@@ -237,8 +237,6 @@ export function LabelEditorSidebar({
 							const filteredLabels = labels.filter((label) => {
 								if (!widthIn && !lengthIn) return true;
 
-								console.log(widthIn, label.widthIn, widthIn == label.widthIn);
-
 								if (
 									widthIn &&
 									lengthIn &&

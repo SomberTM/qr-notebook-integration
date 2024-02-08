@@ -13,12 +13,14 @@ interface CanvasElementBase<E extends ElementType> {
 	type: E;
 }
 
+export type TextAlign = "left" | "center" | "right";
+
 export interface TextModifiers {
 	fontFamily: string;
 	fontSize: number;
 	fontStyle: string;
-	textDecoration: string;
-	align: "left" | "center" | "right";
+	textDecoration: "" | "underline";
+	align: TextAlign;
 }
 
 export interface TextElement extends CanvasElementBase<"TEXT"> {
@@ -67,7 +69,7 @@ export function getInitialData<E extends ElementType>(
 			},
 			dimension: {
 				width: 150,
-				height: 50,
+				height: 100,
 			},
 			content: getInitialContent(elementType),
 			modifiers: getInitialTextModifiers(),
@@ -83,7 +85,7 @@ export function getInitialData<E extends ElementType>(
 		},
 		dimension: {
 			width: 150,
-			height: 50,
+			height: 150,
 		},
 		content: getInitialContent(elementType),
 	} as ElementOf<E>;

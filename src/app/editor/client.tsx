@@ -2,6 +2,7 @@
 
 import LabelEditor from "@/components/editor";
 import { LabelEditorSidebar } from "@/components/editor/sidebar";
+import Toolbar from "@/components/editor/toolbar";
 import { CanvasElement } from "@/components/editor/utils";
 import { Form, FormField } from "@/components/ui/form";
 import {
@@ -92,15 +93,16 @@ export function ClientLayout({ printers, labels }: ClientLayoutProps) {
 							name="data"
 							render={({ field }) => (
 								<LabelEditor
-									width={width}
-									length={length}
 									data={
 										field.value && typeof field.value === "string"
 											? JSON.parse(field.value)
 											: field.value
 									}
 									onDataChange={field.onChange}
-								/>
+								>
+									<LabelEditor.Toolbar />
+									<LabelEditor.Canvas width={width} length={length} />
+								</LabelEditor>
 							)}
 						/>
 					</ResizablePanel>

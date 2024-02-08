@@ -35,4 +35,8 @@ export const columns: ColumnDef<Printer>[] = [
 		accessorKey: "ip",
 		header: "IP Address",
 	},
+	{
+		accessorKey: "dpi",
+		header: "DPI (Dots Per Inch)",
+	},
 ];
