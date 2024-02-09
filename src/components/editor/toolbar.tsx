@@ -8,6 +8,7 @@ import {
 	AlignRight,
 	Bold,
 	Italic,
+	QrCode,
 	Type,
 	Underline,
 } from "lucide-react";
@@ -70,6 +71,13 @@ export default function Toolbar() {
 				onClick={() => actions.addElement("TEXT")}
 			>
 				<Type size={16} />
+			</Button>
+			<Button
+				className="p-1 aspect-square"
+				variant="secondary"
+				onClick={() => actions.addElement("QR_CODE")}
+			>
+				<QrCode size={16} />
 			</Button>
 			<Select
 				disabled={isToolbarDisabled}
