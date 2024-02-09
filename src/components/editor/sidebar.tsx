@@ -40,6 +40,8 @@ import {
 
 import domtoimage from 'dom-to-image';
 
+import { base64ToZPL } from '../../lib/base64ToZPL';
+
 // Converting label size to pixels
 // different printers have different DPI (dots per inch)
 // we ask for this value when a user creates a printer.
@@ -70,19 +72,20 @@ export function LabelEditorSidebar(props: LabelEditorSidebarProps) {
 		useState(false);
 
 	async function onSubmit(values: CreateLabelSchema) {}
-	
+
 	const captureCanvas = () => {
 		const canvasElement = document.getElementById('labelEditorWhiteCanvas');
+		console.log(typeof canvasElement);
 		if (canvasElement) {
-			domtoimage.toJpeg(canvasElement, { quality: 0.95 })
+			domtoimage.toPng(canvasElement)
 				.then(function (dataUrl: string) {
-					var link = document.createElement('a');
-					link.download = 'label.jpeg';
-					link.href = dataUrl;
-					link.click();
-				});
+					base64ToZPL(dataUrl);
+				})
+				.catch(function (error: Error) {
+					console.error('oops, something went wrong!', error);
+				})
 		} else {
-			console.log("No canvas")
+			console.log("No canvas found");
 		}
 	}
 

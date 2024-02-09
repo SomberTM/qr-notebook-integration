@@ -65,6 +65,9 @@ dependencies:
   drizzle-zod:
     specifier: ^0.5.1
     version: 0.5.1(drizzle-orm@0.29.3)(zod@3.22.4)
+  jszpl:
+    specifier: ^1.1.7
+    version: 1.1.7
   lucide-react:
     specifier: ^0.309.0
     version: 0.309.0(react@18.0.0)
@@ -77,6 +80,9 @@ dependencies:
   pg:
     specifier: ^8.11.3
     version: 8.11.3
+  pngjs:
+    specifier: ^7.0.0
+    version: 7.0.0
   react:
     specifier: ^18
     version: 18.0.0
@@ -3529,6 +3535,10 @@ packages:
       object.values: 1.1.7
     dev: true
 
+  /jszpl@1.1.7:
+    resolution: {integrity: sha512-+aafNY3z7UXSnqTy05p7O0/lputZdO1/byYotallOrCW5Pi2+g+4ZvtlEQm7haUKdBv+NI6GbYY1YyizlXfmdQ==}
+    dev: false
+
   /keyv@4.5.4:
     resolution: {integrity: sha512-oxVHkHR/EJf2CNXnWxRLW6mg7JyCCUcG0DtEGmL2ctUo1PNTin1PUil+r/+4r5MpVgC/fn1kjsx7mjSujKqIpw==}
     dependencies:
@@ -3994,6 +4004,11 @@ packages:
   /pirates@4.0.6:
     resolution: {integrity: sha512-saLsH7WeYYPiD25LDuLRRY/i+6HaPYr6G1OUlN39otzkSTxKnubR9RTxS3/Kk50s1g2JTgFwWQDQyplC5/SHZg==}
     engines: {node: '>= 6'}
+
+  /pngjs@7.0.0:
+    resolution: {integrity: sha512-LKWqWJRhstyYo9pGvgor/ivk2w94eSjE3RGVuzLGlr3NmD8bf7RcYGze1mNdEHRP6TRP6rMuDHk5t44hnTRyow==}
+    engines: {node: '>=14.19.0'}
+    dev: false
 
   /postcss-import@14.1.0(postcss@8.0.0):
     resolution: {integrity: sha512-flwI+Vgm4SElObFVPpTIT7SU7R3qk2L7PyduMcokiaVKuWv9d/U+Gm/QAd8NDLuykTWTkcrjOeD2Pp1rMeBTGw==}
