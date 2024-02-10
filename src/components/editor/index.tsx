@@ -42,6 +42,11 @@ function LabelEditor({
 		onDataChange(newData);
 	};
 
+	const deleteElement = (id: string) => {
+		const newData = [...data.filter((element) => element.id !== id)];
+		onDataChange(newData);
+	};
+
 	const addElement = (type: ElementType) => {
 		const defaultData = getInitialData(data, type);
 		onDataChange([...data, defaultData]);
@@ -55,6 +60,7 @@ function LabelEditor({
 			setActiveSelection,
 			updateCanvasData,
 			addElement,
+			deleteElement,
 			setEditing,
 		},
 		state: {

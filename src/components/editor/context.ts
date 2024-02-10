@@ -19,5 +19,6 @@ export interface CanvasContext {
 		setActiveSelection: React.Dispatch<React.SetStateAction<Set<string>>>;
 		updateCanvasData: (data: Partial<CanvasElement>) => void;
 		addElement: (type: ElementType) => void;
+		deleteElement: (id: string) => void;
 	};
 }

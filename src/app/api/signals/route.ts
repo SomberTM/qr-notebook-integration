@@ -1,5 +1,10 @@
-export async function POST(request: Request) {
+export async function GET(request: Request) {
 	const { eid } = await request.json();
-	const data = await fetch(`/signals/${eid}`);
+
+	// eid for testing
+	if (eid === "xyz") {
+	}
+
+	// const data = await fetch(`/signals/${eid}`);
 	// save to db with user
 }

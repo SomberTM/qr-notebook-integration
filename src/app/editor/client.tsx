@@ -85,7 +85,7 @@ export function ClientLayout({ printers, labels }: ClientLayoutProps) {
 					</ResizablePanel>
 					<ResizableHandle withHandle />
 					<ResizablePanel
-						defaultSize={80}
+						defaultSize={70}
 						className="p-32 grid place-items-center z-0 bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] [background-size:16px_16px]"
 					>
 						<FormField
