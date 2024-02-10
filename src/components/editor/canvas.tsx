@@ -9,60 +9,72 @@ interface CanvasProps {
 	length: number;
 }
 
-export function Canvas({ width, length }: CanvasProps) {
-	const { state, actions } = useEditorContext();
-	const stageRef = useRef<React.ComponentRef<typeof Stage>>(null);
+export const Canvas = React.forwardRef<Konva.Stage, CanvasProps>(
+	function Canvas({ width, length }, ref) {
+		const { state, actions } = useEditorContext();
+		const stageRef = useRef<Konva.Stage>(null);
 
-	const onKeyDown = useCallback(
-		(event: KeyboardEvent) => {
-			const isEditing = state.editing !== undefined;
-			if (
-				isEditing ||
-				state.activeSelection.size === 0 ||
-				(event.key !== "Delete" && event.key !== "Backspace")
-			)
-				return;
+		const onKeyDown = useCallback(
+			(event: KeyboardEvent) => {
+				const isEditing = state.editing !== undefined;
+				if (
+					isEditing ||
+					state.activeSelection.size === 0 ||
+					(event.key !== "Delete" && event.key !== "Backspace")
+				)
+					return;
 
-			for (const id of state.activeSelection) actions.deleteElement(id);
-		},
-		[state.editing, state.activeSelection, actions]
-	);
+				for (const id of state.activeSelection) actions.deleteElement(id);
+			},
+			[state.editing, state.activeSelection, actions]
+		);
 
-	useEffect(() => {
-		if (!stageRef.current) return;
-		const container = stageRef.current.container();
-		container.tabIndex = 1;
-		// container.focus();
+		useEffect(() => {
+			if (!stageRef.current) return;
+			const container = stageRef.current.container();
 
-		container.addEventListener("keydown", onKeyDown);
-		return () => container.removeEventListener("keydown", onKeyDown);
-	}, [onKeyDown]);
+			container.addEventListener("keydown", onKeyDown);
+			return () => container.removeEventListener("keydown", onKeyDown);
+		}, [onKeyDown]);
 
-	function checkDeselectAll(
-		event: Konva.KonvaEventObject<MouseEvent | TouchEvent>
-	) {
-		const clickedOnEmpty = event.target === event.target.getStage();
-		if (clickedOnEmpty) {
-			actions.setActiveSelection(new Set());
-			actions.setEditing(undefined);
+		function checkDeselectAll(
+			event: Konva.KonvaEventObject<MouseEvent | TouchEvent>
+		) {
+			const clickedOnEmpty = event.target === event.target.getStage();
+			if (clickedOnEmpty) {
+				actions.setActiveSelection(new Set());
+				actions.setEditing(undefined);
+			}
 		}
-	}
 
-	return (
-		<Stage
-			className="relative shadow-border shadow-xl bg-white"
-			width={length}
-			height={width}
-			onMouseDown={checkDeselectAll}
-			onTouchStart={checkDeselectAll}
-			ref={stageRef}
-		>
-			<Layer>
-				{state.data.map((data, idx) => {
-					const Component = getComponent(data.type);
-					return <Component key={data.id} {...data} />;
-				})}
-			</Layer>
-		</Stage>
-	);
-}
+		return (
+			<Stage
+				className="relative shadow-border shadow-xl bg-white"
+				tabIndex={1}
+				width={length}
+				height={width}
+				onMouseDown={checkDeselectAll}
+				onTouchStart={checkDeselectAll}
+				ref={(element) => {
+					if (!element) return;
+
+					// This stuff works but TS not like
+					if (ref) {
+						// @ts-expect-error
+						ref.current = element;
+					}
+
+					// @ts-expect-error
+					stageRef.current = element;
+				}}
+			>
+				<Layer>
+					{state.data.map((data, idx) => {
+						const Component = getComponent(data.type);
+						return <Component key={data.id} {...data} />;
+					})}
+				</Layer>
+			</Stage>
+		);
+	}
+);
