@@ -17,6 +17,7 @@ export const labels = pgTable("labels", {
 export type Label = typeof labels.$inferSelect;
 
 export const createLabelSchema = createInsertSchema(labels, {
+	id: z.string().min(0).max(0).or(z.string().uuid()),
 	name: (schema) => schema.name.min(1).max(64),
 	data: (schema) => schema.data,
 	widthIn: () => z.coerce.number().positive().min(0.1).max(10.0),

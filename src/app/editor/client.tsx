@@ -30,8 +30,8 @@ interface ClientLayoutProps {
 }
 
 export function ClientLayout({ printers, labels }: ClientLayoutProps) {
-	const [width, setWidth] = useState(400);
-	const [length, setLength] = useState(600);
+	const [width, setWidth] = useState<number | undefined>(undefined);
+	const [length, setLength] = useState<number | undefined>(undefined);
 	const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
 
 	const form = useForm<CreateLabelSchema>({
@@ -79,8 +79,8 @@ export function ClientLayout({ printers, labels }: ClientLayoutProps) {
 							printers={printers}
 							labels={labels}
 							collapsed={isSidebarCollapsed}
-							onWidthChange={(_, width) => setWidth(width)}
-							onLengthChange={(_, length) => setLength(length)}
+							onWidthChange={(width) => setWidth(width)}
+							onLengthChange={(length) => setLength(length)}
 						/>
 					</ResizablePanel>
 					<ResizableHandle withHandle />
@@ -101,7 +101,10 @@ export function ClientLayout({ printers, labels }: ClientLayoutProps) {
 									onDataChange={field.onChange}
 								>
 									<LabelEditor.Toolbar />
-									<LabelEditor.Canvas width={width} length={length} />
+									<LabelEditor.Canvas
+										width={width ?? 400}
+										length={length ?? 600}
+									/>
 								</LabelEditor>
 							)}
 						/>
