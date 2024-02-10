@@ -13,6 +13,7 @@ import { populateLabels } from "@/lib/populateLabel";
 import { useState } from "react";
 import { CanvasElement } from "./editor/utils";
 import LabelEditor from "./editor";
+import { Button } from "./ui/button";
 
 interface PrintFormProps {
 	labels: (Label & { printer: Printer })[];
@@ -29,25 +30,32 @@ export function PrintForm({ labels, data }: PrintFormProps) {
 
 	return (
 		<div className="flex flex-col items-center gap-2">
-			<Select
-				onValueChange={(id) => {
-					const label = labels.find((label) => label.id === id);
-					if (!label) return;
-					setLabel(label);
-					setEditors(populateLabels(label, data));
-				}}
-			>
-				<SelectTrigger className="w-96">
-					<SelectValue placeholder="Select a label template" />
-				</SelectTrigger>
-				<SelectContent>
-					{labels.map((label) => (
-						<SelectItem key={label.id} value={label.id}>
-							{label.name}
-						</SelectItem>
-					))}
-				</SelectContent>
-			</Select>
+			<div className="flex gap-2">
+				<Select
+					onValueChange={(id) => {
+						const label = labels.find((label) => label.id === id);
+						if (!label) return;
+						setLabel(label);
+						setEditors(populateLabels(label, data));
+					}}
+				>
+					<SelectTrigger className="w-96">
+						<SelectValue placeholder="Select a label template" />
+					</SelectTrigger>
+					<SelectContent>
+						{labels.map((label) => (
+							<SelectItem key={label.id} value={label.id}>
+								{label.name}
+							</SelectItem>
+						))}
+					</SelectContent>
+				</Select>
+				{label && (
+					<Button>
+						Print to <strong className="ml-4">{label.printer.name}</strong>
+					</Button>
+				)}
+			</div>
 			<div className="flex justify-center flex-wrap gap-x-4 gap-y-8">
 				{label &&
 					editors.length > 0 &&
