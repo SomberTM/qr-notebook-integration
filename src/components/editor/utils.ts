@@ -1,7 +1,6 @@
 export type ElementType = "TEXT" | "QR_CODE";
 
 interface Content {
-	placeholder: string;
 	value: string;
 }
 
@@ -47,12 +46,7 @@ function getInitialTextModifiers(): TextModifiers {
 }
 
 function getInitialContent(elementType: ElementType): Content {
-	if (elementType === "TEXT")
-		return { placeholder: "Double click to edit...", value: "" };
-
-	// if (elementType === "QR_CODE") return { placeholder: "", value: "" };
-
-	return { placeholder: "", value: "" };
+	return { value: "" };
 }
 
 export function getInitialData<E extends ElementType>(

@@ -2,7 +2,13 @@ import { Html } from "react-konva-utils";
 import { type QrElement } from "../utils";
 // import QRCode from "react-qr-code";
 import QRCode from "qrcode";
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, {
+	useCallback,
+	useEffect,
+	useMemo,
+	useRef,
+	useState,
+} from "react";
 import { Image, Transformer } from "react-konva";
 import { useEditorContext } from "../context";
 import { Input } from "@/components/ui/input";
@@ -14,8 +20,11 @@ export function QrElement(props: QrElement) {
 	const { state, actions } = useEditorContext();
 
 	const [image, setImage] = useState(new window.Image());
+	const [isInputHidden, setIsInputHidden] = useState(false);
 
-	const isSelected = state.activeSelection.has(props.id);
+	const isSelected = useMemo(() => {
+		return state.activeSelection.has(props.id);
+	}, [state.activeSelection, props.id]);
 
 	const imageRef = useRef<React.ComponentRef<typeof Image>>(null);
 	const transformRef = useRef<React.ComponentRef<typeof Transformer>>(null);
@@ -60,6 +69,8 @@ export function QrElement(props: QrElement) {
 					actions.setEditing(undefined);
 					actions.setActiveSelection(new Set([props.id]));
 				}}
+				onDragStart={() => setIsInputHidden(true)}
+				onDragEnd={() => setIsInputHidden(false)}
 				onDragMove={(event) => {
 					actions.updateCanvasData({
 						id: props.id,
@@ -92,33 +103,35 @@ export function QrElement(props: QrElement) {
 
 			{state.activeSelection.has(props.id) && (
 				<React.Fragment>
-					<Html>
-						<Input
-							className="absolute text-xs p-1 py-0"
-							style={{
-								left: `${props.position.left - QR_INPUT_EXTRA_WIDTH / 2}px`,
-								top: `${
-									props.position.top +
-									props.dimension.height +
-									QR_INPUT_OFFSET_BOTTOM
-								}px`,
-								width: `${props.dimension.width + QR_INPUT_EXTRA_WIDTH}px`,
-							}}
-							placeholder="Enter qr contents..."
-							value={props.content.value}
-							onChange={(event) =>
-								actions.updateCanvasData({
-									id: props.id,
-									content: {
-										...props.content,
-										value: event.target.value,
-									},
-								})
-							}
-							onClick={() => actions.setEditing(props.id)}
-							onBlur={() => actions.setEditing(undefined)}
-						/>
-					</Html>
+					{!isInputHidden && (
+						<Html>
+							<Input
+								className="absolute text-xs p-1 py-0"
+								style={{
+									left: `${props.position.left - QR_INPUT_EXTRA_WIDTH / 2}px`,
+									top: `${
+										props.position.top +
+										props.dimension.height +
+										QR_INPUT_OFFSET_BOTTOM
+									}px`,
+									width: `${props.dimension.width + QR_INPUT_EXTRA_WIDTH}px`,
+								}}
+								placeholder="Enter qr contents..."
+								value={props.content.value}
+								onChange={(event) =>
+									actions.updateCanvasData({
+										id: props.id,
+										content: {
+											...props.content,
+											value: event.target.value,
+										},
+									})
+								}
+								onClick={() => actions.setEditing(props.id)}
+								onBlur={() => actions.setEditing(undefined)}
+							/>
+						</Html>
+					)}
 					<Transformer
 						ref={transformRef}
 						anchorSize={8}

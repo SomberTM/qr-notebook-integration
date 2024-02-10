@@ -75,7 +75,7 @@ const TextElement = (props: TextElement) => {
 			<Text
 				draggable
 				ref={textRef}
-				text={content.value === "" ? content.placeholder : content.value}
+				text={content.value === "" ? "Double click to edit..." : content.value}
 				x={position.left}
 				y={position.top}
 				{...modifiers}
