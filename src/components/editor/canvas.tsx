@@ -1,8 +1,13 @@
-import { Stage, Layer } from "react-konva";
+import { Stage, Layer, Rect } from "react-konva";
 import { getComponent } from "./elements";
 import { useEditorContext } from "./context";
 import Konva from "konva";
-import React, { useCallback, useEffect, useRef } from "react";
+import React, {
+	useCallback,
+	useEffect,
+	useImperativeHandle,
+	useRef,
+} from "react";
 
 interface CanvasProps {
 	width: number;
@@ -13,6 +18,8 @@ export const Canvas = React.forwardRef<Konva.Stage, CanvasProps>(
 	function Canvas({ width, length }, ref) {
 		const { state, actions } = useEditorContext();
 		const stageRef = useRef<Konva.Stage>(null);
+
+		useImperativeHandle(ref, () => stageRef.current!, []);
 
 		const onKeyDown = useCallback(
 			(event: KeyboardEvent) => {
@@ -55,18 +62,7 @@ export const Canvas = React.forwardRef<Konva.Stage, CanvasProps>(
 				height={width}
 				onMouseDown={checkDeselectAll}
 				onTouchStart={checkDeselectAll}
-				ref={(element) => {
-					if (!element) return;
-
-					// This stuff works but TS not like
-					if (ref) {
-						// @ts-expect-error
-						ref.current = element;
-					}
-
-					// @ts-expect-error
-					stageRef.current = element;
-				}}
+				ref={stageRef}
 			>
 				<Layer>
 					{state.data.map((data, idx) => {

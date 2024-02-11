@@ -40,7 +40,5 @@ export function base64ToZPL(base64String: string) {
 
 	const zpl = label.generateZPL();
 
-	console.log(zpl);
-
 	return zpl;
 }
