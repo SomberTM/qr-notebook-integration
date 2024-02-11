@@ -17,28 +17,42 @@ export function base64ToZPL(base64String: string) {
 	const base64Data = base64String.replace(/^data:image\/png;base64,/, "");
 	const imageBuffer = Buffer.from(base64Data, "base64");
 	const png = PNG.sync.read(imageBuffer);
-	const { width, height, data } = png;
 
 	// Set dimensions of label to the same as image
-	label.width = width;
-	label.height = height;
+	label.width = png.width;
+	label.height = png.height;
 
-	// Convert to monochrome
-	let imageBits = [];
-	for (let i = 0; i < data.length; i += 4) {
-		const grayscale = (data[i] + data[i + 1] + data[i + 2]) / 3;
-		const blackOrWhite = grayscale < 128 ? 1 : 0;
-		imageBits.push(blackOrWhite);
-	}
-
-	const graphicData = new GraphicData(width, height, imageBits);
+	// Create Graphic
 	const graphic = new Graphic();
 	label.content.push(graphic);
-	graphic.width = width;
-	graphic.height = height;
+	graphic.width = png.width;
+	graphic.height = png.height;
+
+	// Convert to monochrome
+	let index = 0;
+	const imageBits = [];
+	
+	for (let y = 0; y < png.height; y++) {
+		for (let x = 0; x < png.width; x++) {
+			const red = png.data[index++];
+			const green = png.data[index++];
+			const blue = png.data[index++];
+			const opacity = png.data[index++];
+			
+			let value = 0;
+			
+			if (opacity != 0) {
+				value = (((red + green + blue) / 3) < 180) ? 1 : 0;
+			}
+			imageBits.push(value);
+		}
+	}
+
+	const graphicData = new GraphicData(png.width, png.height, imageBits);
 	graphic.data = graphicData;
 
 	const zpl = label.generateZPL();
 
+	console.log(zpl);
 	return zpl;
 }
