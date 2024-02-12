@@ -56,7 +56,7 @@ export default function Toolbar() {
 
 	return (
 		<div
-			className="flex items-center p-2 rounded-lg shadow-sm shadow-black gap-4 bg-primary"
+			className="flex items-center p-2 w-full rounded-lg shadow-sm shadow-black gap-4 bg-primary"
 			onClick={() => {
 				// Dont want to lose focus of text editor when clicking in toolbar
 				if (!singleSelectedText) return;

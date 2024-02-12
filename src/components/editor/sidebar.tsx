@@ -217,7 +217,7 @@ export function LabelEditorSidebar({
 												/>
 												{printer && !!field.value && !isNaN(field.value) && (
 													<span className="col-span-1 text-xs justify-self-end">
-														{field.value * printer.dpi}px
+														{(field.value * printer.dpi).toFixed(2)}px
 													</span>
 												)}
 											</div>
@@ -251,7 +251,7 @@ export function LabelEditorSidebar({
 												/>
 												{printer && !!field.value && !isNaN(field.value) && (
 													<span className="col-span-1 text-xs justify-self-end">
-														{field.value * printer.dpi}px
+														{(field.value * printer.dpi).toFixed(2)}px
 													</span>
 												)}
 											</div>

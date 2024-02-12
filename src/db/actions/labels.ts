@@ -4,6 +4,7 @@ import { eq } from "drizzle-orm";
 import { FormActionResponse } from ".";
 import db from "..";
 import { CreateLabelSchema, Label, UpdateLabelSchema, labels } from "../schema";
+import { revalidatePath } from "next/cache";
 
 export async function createLabelTemplate({
 	name,
@@ -23,6 +24,8 @@ export async function createLabelTemplate({
 				data,
 			})
 			.returning();
+
+		revalidatePath("/editor");
 		return { success: true, data: label };
 	} catch (error: any) {
 		return { success: false, message: (error as Error).message };
@@ -49,6 +52,8 @@ export async function updateLabelTemplate({
 			})
 			.where(eq(labels.id, id))
 			.returning();
+
+		revalidatePath("/editor");
 		return { success: true, data: label };
 	} catch (error: any) {
 		return { success: false, message: (error as Error).message };

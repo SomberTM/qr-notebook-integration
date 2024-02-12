@@ -48,11 +48,16 @@ export function ClientLayout({ printers, labels }: ClientLayoutProps) {
 
 		if (isUpdate)
 			result = await updateLabelTemplate(value as UpdateLabelSchema);
-		else result = await createLabelTemplate(value as CreateLabelSchema);
+		else {
+			result = await createLabelTemplate(value as CreateLabelSchema);
+		}
 
 		if (result.success) {
 			if (isUpdate) toast("Label template successfully updated!");
-			else toast("New label template successfully created!");
+			else {
+				toast("New label template successfully created!");
+				form.setValue("id", result.data.id);
+			}
 		} else {
 			toast("Failed to save label template. Please try again later");
 		}
