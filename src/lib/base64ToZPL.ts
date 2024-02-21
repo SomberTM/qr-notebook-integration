@@ -33,20 +33,18 @@ export function base64ToZPL(base64String: string) {
 	const imageBits = [];
 	
 	for (let y = 0; y < png.height; y++) {
-		for (let x = 0; x < png.width; x++) {
-			const red = png.data[index++];
-			const green = png.data[index++];
-			const blue = png.data[index++];
-			const opacity = png.data[index++];
-			
-			let value = 0;
-			
-			if (opacity != 0) {
-				value = (((red + green + blue) / 3) < 180) ? 1 : 0;
-			}
-			imageBits.push(value);
-		}
-	}
+    	for (let x = 0; x < png.width; x++) {
+        	const red = png.data[index++];
+        	const green = png.data[index++];
+        	const blue = png.data[index++];
+        	const opacity = png.data[index++];
+        
+			let value = (opacity > 128) ? 1 : 0;
+
+        	imageBits.push(value);
+    	}
+}
+
 
 	const graphicData = new GraphicData(png.width, png.height, imageBits);
 	graphic.data = graphicData;

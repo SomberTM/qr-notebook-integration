@@ -4,7 +4,7 @@ import { PrintForm } from "@/components/print-form";
 import { Label } from "@/components/ui/label";
 
 import db from "@/db";
-import { getEid } from "@/db/actions/signals";
+import { getDataFromEid } from "@/db/actions/signals";
 import { labels as labelsTable, printers as printersTable } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import { redirect } from "next/navigation";
@@ -25,7 +25,7 @@ export default async function Print({
 		.from(labelsTable)
 		.leftJoin(printersTable, eq(printersTable.id, labelsTable.designedForId));
 
-	const data = await getEid(searchParams.eid);
+	const data = await getDataFromEid(searchParams.eid);
 
 	return (
 		<MainLayout>
