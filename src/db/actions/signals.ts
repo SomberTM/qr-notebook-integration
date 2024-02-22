@@ -16,18 +16,21 @@ const mockData = [
 ];
 export type FormattedSignalsResponse<T = unknown> = Record<string, T>[];
 
-export async function getDataFromEid(eid: string): Promise<FormattedSignalsResponse> {
+export async function getDataFromEid(
+	eid: string
+): Promise<FormattedSignalsResponse> {
 	if (eid === "xyz") return mockData;
 	let data;
 	try {
-		const response = await fetch('http://localhost:8000');
+		const response = await fetch("http://localhost:8000");
 		if (!response.ok) {
 			throw new Error(`Error! Status: ${response.status}`);
 		}
 		data = await response.json();
+		// TODO: transform signals response
 		return data;
 	} catch (error) {
-		console.log('Error fetching data', error);
+		console.log("Error fetching data", error);
 	}
 	return data;
 }
