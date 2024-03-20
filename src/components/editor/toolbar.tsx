@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useCallback } from "react";
+import React, { useCallback, useState } from "react";
 import { Button } from "../ui/button";
 import {
 	AlignCenter,
@@ -9,6 +9,7 @@ import {
 	Bold,
 	Italic,
 	QrCode,
+	TextQuote,
 	Type,
 	Underline,
 } from "lucide-react";
@@ -18,11 +19,23 @@ import { Select, SelectContent, SelectItem, SelectTrigger } from "../ui/select";
 import { SelectValue } from "@radix-ui/react-select";
 import { TextAlign, TextElement, TextModifiers } from "./utils";
 import { Toggle } from "../ui/toggle";
+import {
+	Dialog,
+	DialogContent,
+	DialogDescription,
+	DialogHeader,
+	DialogTitle,
+	DialogTrigger,
+} from "../ui/dialog";
+import { normalizeColumnName } from "@/lib/utils";
+import { Label } from "../ui/label";
+import { Input } from "../ui/input";
 
 const fontSizes = [6, 7, 8, 9, 10, 11, 12, 14, 18, 24, 30, 36, 48, 60, 72, 96];
 
 export default function Toolbar() {
 	const { state, actions } = useEditorContext();
+	const [columnName, setColumnName] = useState<string | undefined>();
 
 	let singleSelectedText: TextElement | undefined = undefined;
 	if (state.activeSelection.size === 1 || state.editing) {
@@ -51,6 +64,18 @@ export default function Toolbar() {
 		},
 		[singleSelectedText, actions]
 	);
+
+	const insertColumnPlacholder = useCallback(() => {
+		if (!singleSelectedText || !columnName) return;
+		actions.updateCanvasData({
+			id: singleSelectedText.id,
+			content: {
+				value:
+					singleSelectedText.content.value +
+					`{{${normalizeColumnName(columnName)}}}`,
+			},
+		});
+	}, [singleSelectedText, columnName, actions]);
 
 	const isToolbarDisabled = !singleSelectedText;
 
@@ -208,6 +233,34 @@ export default function Toolbar() {
 					<AlignRight size={16} />
 				</ToggleGroupItem>
 			</ToggleGroup>
+			<Dialog>
+				<DialogTrigger asChild>
+					<Button
+						className="p-1 aspect-square"
+						variant="secondary"
+						disabled={isToolbarDisabled}
+					>
+						<TextQuote size={16} />
+					</Button>
+				</DialogTrigger>
+				<DialogContent>
+					<DialogHeader>
+						<DialogTitle>Insert data placeholder</DialogTitle>
+						<DialogDescription>
+							Type the name of the column as seen in your table on signals.
+						</DialogDescription>
+					</DialogHeader>
+					<div className="flex flex-col gap-2">
+						<Label>Column</Label>
+						<Input
+							placeholder="Name"
+							value={columnName}
+							onChange={(event) => setColumnName(event.target.value)}
+						/>
+						<Button onClick={() => insertColumnPlacholder()}>Insert</Button>
+					</div>
+				</DialogContent>
+			</Dialog>
 		</div>
 	);
 }

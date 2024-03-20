@@ -1,13 +1,13 @@
-export interface FormActionResponseSuccess<T> {
+export interface ActionResponseSuccess<T> {
 	success: true;
 	data: T;
 }
 
-export interface FormActionResponseFailure {
+export interface ActionResponseFailure {
 	success: false;
 	message: string;
 }
 
-export type FormActionResponse<T = unknown> =
-	| FormActionResponseSuccess<T>
-	| FormActionResponseFailure;
+export type ActionResponse<T = unknown> =
+	| ActionResponseSuccess<T>
+	| ActionResponseFailure;

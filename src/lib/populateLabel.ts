@@ -3,29 +3,39 @@ import { FormattedSignalsResponse } from "@/db/actions/signals";
 import { Label } from "@/db/schema";
 
 export function populateLabels(
-	labelTemplate: Label,
+	labelData: Label["data"],
 	data: FormattedSignalsResponse
 ): CanvasElement[][] {
 	let canvasData: CanvasElement[][] = [];
 
 	for (const row of data) {
-		const template = [
-			...(labelTemplate.data as Record<any, any>[]),
-		] as CanvasElement[];
+		// deep clone required
+		const template = JSON.parse(JSON.stringify(labelData)) as CanvasElement[];
+		const output: CanvasElement[] = [];
 
-		const keys = Object.keys(row);
-		for (const entry of template.filter((el) => el.type === "TEXT")) {
+		for (const entity of template) {
+			if (entity.type !== "TEXT") {
+				output.push(entity);
+				continue;
+			}
+
+			const copiedEntity = { ...entity };
+			const keys = Object.keys(row);
+
 			for (const key of keys) {
-				if (entry.content.value.includes(`{{${key}}}`)) {
-					entry.content.value = entry.content.value.replaceAll(
+				if (copiedEntity.content.value.includes(`{{${key}}}`)) {
+					console.log(`Found match for ${key}`);
+					copiedEntity.content.value = copiedEntity.content.value.replaceAll(
 						`{{${key}}}`,
 						row[key] as any
 					);
 				}
 			}
+
+			output.push(copiedEntity);
 		}
 
-		canvasData.push(template);
+		canvasData.push(output);
 	}
 
 	return canvasData;

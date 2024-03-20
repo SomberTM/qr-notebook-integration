@@ -1,0 +1,353 @@
+{
+  "links": {
+    "self": "https://mercksndbox2.signalsnotebook.perkinelmer.cloud/api/rest/v1.0/adt/grid:d71d60fe-376e-494c-8d08-2884788ca858"
+  },
+  "data": [
+    {
+      "type": "adtRow",
+      "id": "f9f3df14-4076-4475-9abd-eca59101d8e4",
+      "links": {
+        "self": "https://mercksndbox2.signalsnotebook.perkinelmer.cloud/api/rest/v1.0/adt/grid:d71d60fe-376e-494c-8d08-2884788ca858/f9f3df14-4076-4475-9abd-eca59101d8e4"
+      },
+      "attributes": {
+        "id": "f9f3df14-4076-4475-9abd-eca59101d8e4",
+        "type": "adtRow",
+        "cells": [
+          {
+            "key": "31609d79-f3a8-48cc-95eb-384b53cbb2a9",
+            "type": "text",
+            "name": "Name",
+            "content": {
+              "value": "Needle Wash 50:50 Water/Acetonitrile"
+            }
+          },
+          {
+            "key": "98b26da2-47dc-414d-963a-56c5b0673341",
+            "type": "datetime",
+            "name": "Preparation Date",
+            "content": {
+              "value": "2023-12-04T05:00:00.000Z"
+            }
+          },
+          {
+            "key": "12eb90a5-10bc-4e0f-ac44-9f32f89d8ca6",
+            "type": "datetime",
+            "name": "Expiration Date",
+            "content": {
+              "value": "2024-03-04T05:00:00.000Z"
+            }
+          },
+          {
+            "key": "69e5e0b3-ce46-4046-b257-e533ba8fbdf0",
+            "type": "unit",
+            "name": "Final Volume",
+            "content": {
+              "display": "500 mL",
+              "value": 500
+            }
+          }
+        ]
+      },
+      "relationships": {
+        "entity": {
+          "links": {
+            "self": "https://mercksndbox2.signalsnotebook.perkinelmer.cloud/api/rest/v1.0/entities/grid:d71d60fe-376e-494c-8d08-2884788ca858"
+          },
+          "data": {
+            "type": "entity",
+            "id": "grid:d71d60fe-376e-494c-8d08-2884788ca858"
+          }
+        },
+        "columnDefinitions": {
+          "data": {
+            "type": "columnDefinitions",
+            "id": "grid:d71d60fe-376e-494c-8d08-2884788ca858"
+          }
+        }
+      }
+    },
+    {
+      "type": "adtRow",
+      "id": "21df8ce6-d75a-44c9-a849-3bb5263f3605",
+      "links": {
+        "self": "https://mercksndbox2.signalsnotebook.perkinelmer.cloud/api/rest/v1.0/adt/grid:d71d60fe-376e-494c-8d08-2884788ca858/21df8ce6-d75a-44c9-a849-3bb5263f3605"
+      },
+      "attributes": {
+        "id": "21df8ce6-d75a-44c9-a849-3bb5263f3605",
+        "type": "adtRow",
+        "cells": [
+          {
+            "key": "31609d79-f3a8-48cc-95eb-384b53cbb2a9",
+            "type": "text",
+            "name": "Name",
+            "content": {
+              "value": "Mobile Phase A (10:90 Methanol/Water)"
+            }
+          },
+          {
+            "key": "98b26da2-47dc-414d-963a-56c5b0673341",
+            "type": "datetime",
+            "name": "Preparation Date",
+            "content": {
+              "value": "2023-12-04T05:00:00.000Z"
+            }
+          },
+          {
+            "key": "12eb90a5-10bc-4e0f-ac44-9f32f89d8ca6",
+            "type": "datetime",
+            "name": "Expiration Date",
+            "content": {
+              "value": "2024-03-04T05:00:00.000Z"
+            }
+          },
+          {
+            "key": "69e5e0b3-ce46-4046-b257-e533ba8fbdf0",
+            "type": "unit",
+            "name": "Final Volume",
+            "content": {
+              "display": "500 mL",
+              "value": 500
+            }
+          }
+        ]
+      },
+      "relationships": {
+        "entity": {
+          "links": {
+            "self": "https://mercksndbox2.signalsnotebook.perkinelmer.cloud/api/rest/v1.0/entities/grid:d71d60fe-376e-494c-8d08-2884788ca858"
+          },
+          "data": {
+            "type": "entity",
+            "id": "grid:d71d60fe-376e-494c-8d08-2884788ca858"
+          }
+        },
+        "columnDefinitions": {
+          "data": {
+            "type": "columnDefinitions",
+            "id": "grid:d71d60fe-376e-494c-8d08-2884788ca858"
+          }
+        }
+      }
+    },
+    {
+      "type": "adtRow",
+      "id": "599d9cd9-899d-42aa-afdc-8bc8f21db0d0",
+      "links": {
+        "self": "https://mercksndbox2.signalsnotebook.perkinelmer.cloud/api/rest/v1.0/adt/grid:d71d60fe-376e-494c-8d08-2884788ca858/599d9cd9-899d-42aa-afdc-8bc8f21db0d0"
+      },
+      "attributes": {
+        "id": "599d9cd9-899d-42aa-afdc-8bc8f21db0d0",
+        "type": "adtRow",
+        "cells": [
+          {
+            "key": "31609d79-f3a8-48cc-95eb-384b53cbb2a9",
+            "type": "text",
+            "name": "Name",
+            "content": {
+              "value": "Mobile Phase B (Acetonitrile)"
+            }
+          },
+          {
+            "key": "98b26da2-47dc-414d-963a-56c5b0673341",
+            "type": "datetime",
+            "name": "Preparation Date",
+            "content": {
+              "value": "2023-12-04T05:00:00.000Z"
+            }
+          },
+          {
+            "key": "12eb90a5-10bc-4e0f-ac44-9f32f89d8ca6",
+            "type": "datetime",
+            "name": "Expiration Date",
+            "content": {
+              "value": "2024-03-04T05:00:00.000Z"
+            }
+          },
+          {
+            "key": "69e5e0b3-ce46-4046-b257-e533ba8fbdf0",
+            "type": "unit",
+            "name": "Final Volume",
+            "content": {
+              "display": "500 mL",
+              "value": 500
+            }
+          }
+        ]
+      },
+      "relationships": {
+        "entity": {
+          "links": {
+            "self": "https://mercksndbox2.signalsnotebook.perkinelmer.cloud/api/rest/v1.0/entities/grid:d71d60fe-376e-494c-8d08-2884788ca858"
+          },
+          "data": {
+            "type": "entity",
+            "id": "grid:d71d60fe-376e-494c-8d08-2884788ca858"
+          }
+        },
+        "columnDefinitions": {
+          "data": {
+            "type": "columnDefinitions",
+            "id": "grid:d71d60fe-376e-494c-8d08-2884788ca858"
+          }
+        }
+      }
+    },
+    {
+      "type": "adtRow",
+      "id": "f2ad82d4-46ac-4730-9723-9b4a6ff2cbeb",
+      "links": {
+        "self": "https://mercksndbox2.signalsnotebook.perkinelmer.cloud/api/rest/v1.0/adt/grid:d71d60fe-376e-494c-8d08-2884788ca858/f2ad82d4-46ac-4730-9723-9b4a6ff2cbeb"
+      },
+      "attributes": {
+        "id": "f2ad82d4-46ac-4730-9723-9b4a6ff2cbeb",
+        "type": "adtRow",
+        "cells": [
+          {
+            "key": "31609d79-f3a8-48cc-95eb-384b53cbb2a9",
+            "type": "text",
+            "name": "Name",
+            "content": {
+              "value": "Seal Wash (10:90 IPA/Water)"
+            }
+          },
+          {
+            "key": "98b26da2-47dc-414d-963a-56c5b0673341",
+            "type": "datetime",
+            "name": "Preparation Date",
+            "content": {
+              "value": "2023-12-04T05:00:00.000Z"
+            }
+          },
+          {
+            "key": "12eb90a5-10bc-4e0f-ac44-9f32f89d8ca6",
+            "type": "datetime",
+            "name": "Expiration Date",
+            "content": {
+              "value": "2024-03-04T05:00:00.000Z"
+            }
+          },
+          {
+            "key": "69e5e0b3-ce46-4046-b257-e533ba8fbdf0",
+            "type": "unit",
+            "name": "Final Volume",
+            "content": {
+              "display": "500 mL",
+              "value": 500
+            }
+          }
+        ]
+      },
+      "relationships": {
+        "entity": {
+          "links": {
+            "self": "https://mercksndbox2.signalsnotebook.perkinelmer.cloud/api/rest/v1.0/entities/grid:d71d60fe-376e-494c-8d08-2884788ca858"
+          },
+          "data": {
+            "type": "entity",
+            "id": "grid:d71d60fe-376e-494c-8d08-2884788ca858"
+          }
+        },
+        "columnDefinitions": {
+          "data": {
+            "type": "columnDefinitions",
+            "id": "grid:d71d60fe-376e-494c-8d08-2884788ca858"
+          }
+        }
+      }
+    }
+  ],
+  "included": [
+    {
+      "type": "entity",
+      "id": "grid:d71d60fe-376e-494c-8d08-2884788ca858",
+      "links": {
+        "self": "https://mercksndbox2.signalsnotebook.perkinelmer.cloud/api/rest/v1.0/entities/grid:d71d60fe-376e-494c-8d08-2884788ca858"
+      },
+      "attributes": {
+        "type": "grid",
+        "eid": "grid:d71d60fe-376e-494c-8d08-2884788ca858",
+        "name": "Solution Preparation table",
+        "digest": "46869021",
+        "fields": {
+          "Description": {
+            "value": ""
+          },
+          "Name": {
+            "value": "Solution Preparation table"
+          }
+        }
+      }
+    },
+    {
+      "type": "columnDefinitions",
+      "id": "grid:d71d60fe-376e-494c-8d08-2884788ca858",
+      "attributes": {
+        "id": "grid:d71d60fe-376e-494c-8d08-2884788ca858",
+        "type": "columnDefinitions",
+        "templateId": "grid:b995d555-0950-4702-8b7d-191a448ccef0",
+        "columns": [
+          {
+            "key": "4c840d97-298f-4365-9871-bb0295d2cbba",
+            "title": "Solution Identifier",
+            "type": "text",
+            "options": [
+              "yes",
+              "no",
+              "maybe"
+            ],
+            "hidden": true,
+            "saved": true
+          },
+          {
+            "key": "31609d79-f3a8-48cc-95eb-384b53cbb2a9",
+            "title": "Name",
+            "type": "text",
+            "saved": true
+          },
+          {
+            "key": "b5bf5a3f-3ee8-4700-ad83-c7dadea5ec03",
+            "title": "Purpose",
+            "type": "text",
+            "hidden": true,
+            "created": true,
+            "isUserColumn": true
+          },
+          {
+            "key": "345a10c7-1a67-4eb1-8a96-67f186913907",
+            "title": "Preparation",
+            "type": "text",
+            "hidden": true,
+            "saved": true
+          },
+          {
+            "key": "69e5e0b3-ce46-4046-b257-e533ba8fbdf0",
+            "title": "Final Volume",
+            "type": "unit",
+            "measure": "volume",
+            "saved": true,
+            "defaultUnit": "L"
+          },
+          {
+            "key": "98b26da2-47dc-414d-963a-56c5b0673341",
+            "title": "Preparation Date",
+            "type": "datetime",
+            "saved": true
+          },
+          {
+            "key": "12eb90a5-10bc-4e0f-ac44-9f32f89d8ca6",
+            "title": "Expiration Date",
+            "type": "datetime",
+            "saved": true
+          },
+          {
+            "key": "e327362e-d549-4fe9-bc05-c4352eb25fc9",
+            "title": "Comment",
+            "type": "text",
+            "hidden": true,
+            "saved": true
+          }
+        ]
+      }
+    }
+  ]
+}

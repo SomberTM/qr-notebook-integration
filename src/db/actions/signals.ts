@@ -1,36 +1,42 @@
 "use server";
 
-import { date } from "drizzle-orm/mysql-core";
+import {
+	SignalsResponse,
+	formatSignalsResponse,
+} from "@/lib/formatSignalsResponse";
+import { ActionResponse } from ".";
+import mockData from "@/lib/signalsMockData.json";
 
-const mockData = [
-	{ id: "1a2b3c", analyst: "John Smith", contents: "Acetone" },
-	{ id: "4d5e6f", analyst: "Emily Johnson", contents: "Ethanol" },
-	{ id: "7g8h9i", analyst: "Michael Williams", contents: "Methanol" },
-	{ id: "j1k2l3", analyst: "Jessica Brown", contents: "Benzene" },
-	{ id: "4m5n6o", analyst: "David Davis", contents: "Toluene" },
-	{ id: "7p8q9r", analyst: "Jennifer Miller", contents: "Xylene" },
-	{ id: "s1t2u3", analyst: "Daniel Wilson", contents: "Ethylbenzene" },
-	{ id: "4v5w6x", analyst: "Sarah Martinez", contents: "Styrene" },
-	{ id: "7y8z9a", analyst: "Robert Anderson", contents: "Methyl ethyl ketone" },
-	{ id: "b1c2d3", analyst: "Amanda Taylor", contents: "Isopropanol" },
-];
 export type FormattedSignalsResponse<T = unknown> = Record<string, T>[];
 
 export async function getDataFromEid(
 	eid: string
-): Promise<FormattedSignalsResponse> {
-	if (eid === "xyz") return mockData;
-	let data;
+): Promise<ActionResponse<FormattedSignalsResponse>> {
+	if (eid === "xyz")
+		return {
+			success: true,
+			data: formatSignalsResponse(mockData as SignalsResponse),
+		};
+
 	try {
-		const response = await fetch("http://localhost:8000");
+		const signalsBaseEndpoint = process.env.SIGNALS_ENDPOINT;
+		if (!signalsBaseEndpoint)
+			return {
+				success: false,
+				message:
+					"Signals endpoint not set in configuration. Please set SIGNALS_ENDPOINT environment variable.",
+			};
+
+		const url = new URL(`?eid=${eid}`, signalsBaseEndpoint);
+		const response = await fetch(url);
 		if (!response.ok) {
 			throw new Error(`Error! Status: ${response.status}`);
 		}
-		data = await response.json();
-		// TODO: transform signals response
-		return data;
+
+		const result: SignalsResponse = await response.json();
+		const data = formatSignalsResponse(result);
+		return { success: true, data };
 	} catch (error) {
-		console.log("Error fetching data", error);
+		return { success: false, message: (error as any).message };
 	}
-	return data;
 }

@@ -1,7 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { FormActionResponse } from ".";
+import { ActionResponse } from ".";
 import db from "..";
 import { CreatePrinterSchema, Printer, printers } from "../schema";
 
@@ -9,7 +9,7 @@ export async function createPrinterAction({
 	name,
 	ip,
 	dpi,
-}: CreatePrinterSchema): Promise<FormActionResponse<Printer>> {
+}: CreatePrinterSchema): Promise<ActionResponse<Printer>> {
 	try {
 		const [printer] = await db
 			.insert(printers)

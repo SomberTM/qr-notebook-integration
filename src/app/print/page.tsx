@@ -25,23 +25,34 @@ export default async function Print({
 		.from(labelsTable)
 		.leftJoin(printersTable, eq(printersTable.id, labelsTable.designedForId));
 
-	const data = await getDataFromEid(searchParams.eid);
+	const result = await getDataFromEid(searchParams.eid);
 
 	return (
 		<MainLayout>
 			<Navigation />
-			<div className="flex flex-col gap-2 items-center">
-				<Label>
-					eid: <strong>{searchParams.eid}</strong>
-				</Label>
-				<PrintForm
-					labels={labels.map(({ labels: label, printers: printer }) => ({
-						...label,
-						printer: printer!,
-					}))}
-					data={data}
-				/>
-			</div>
+			{!result.success && (
+				<div className="flex flex-col gap-2">
+					<span className="text-xl">
+						Invalid eid provided or the request failed with the given eid. Error
+						message provided below.
+					</span>
+					<span className="text-muted-foreground">{result.message}</span>
+				</div>
+			)}
+			{result.success && (
+				<div className="flex flex-col gap-2 items-center">
+					<Label>
+						eid: <strong>{searchParams.eid}</strong>
+					</Label>
+					<PrintForm
+						labels={labels.map(({ labels: label, printers: printer }) => ({
+							...label,
+							printer: printer!,
+						}))}
+						data={result.data}
+					/>
+				</div>
+			)}
 		</MainLayout>
 	);
 }

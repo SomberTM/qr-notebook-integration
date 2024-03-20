@@ -66,8 +66,9 @@ export function PrintForm({ labels, data }: PrintFormProps) {
 											onValueChange={(id) => {
 												const label = labels.find((label) => label.id === id);
 												if (!label) return;
+												const labelData = label.data as unknown[];
+												setEditors(populateLabels(labelData, data));
 												field.onChange(label);
-												setEditors(populateLabels(label, data));
 											}}
 										>
 											<SelectTrigger className="w-96">

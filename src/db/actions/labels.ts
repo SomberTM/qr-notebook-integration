@@ -1,7 +1,7 @@
 "use server";
 
 import { eq } from "drizzle-orm";
-import { FormActionResponse } from ".";
+import { ActionResponse } from ".";
 import db from "..";
 import { CreateLabelSchema, Label, UpdateLabelSchema, labels } from "../schema";
 import { revalidatePath } from "next/cache";
@@ -12,7 +12,7 @@ export async function createLabelTemplate({
 	widthIn,
 	lengthIn,
 	data,
-}: CreateLabelSchema): Promise<FormActionResponse<Label>> {
+}: CreateLabelSchema): Promise<ActionResponse<Label>> {
 	try {
 		const [label] = await db
 			.insert(labels)
@@ -39,7 +39,7 @@ export async function updateLabelTemplate({
 	widthIn,
 	lengthIn,
 	data,
-}: UpdateLabelSchema): Promise<FormActionResponse<Label>> {
+}: UpdateLabelSchema): Promise<ActionResponse<Label>> {
 	try {
 		const [label] = await db
 			.update(labels)
