@@ -44,8 +44,6 @@ export function ClientLayout({ printers, labels }: ClientLayoutProps) {
 		const value = { ...values, data: JSON.stringify(values.data ?? []) };
 		const isUpdate = !!value.id;
 
-		console.log(value.data);
-
 		if (isUpdate)
 			result = await updateLabelTemplate(value as unknown as UpdateLabelSchema);
 		else {
