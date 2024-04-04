@@ -5,6 +5,7 @@ import { ActionResponse } from ".";
 import db from "..";
 import { CreateLabelSchema, Label, UpdateLabelSchema, labels } from "../schema";
 import { revalidatePath } from "next/cache";
+import { v4 as uuid } from "uuid";
 
 export async function createLabelTemplate({
 	name,
@@ -12,21 +13,20 @@ export async function createLabelTemplate({
 	widthIn,
 	lengthIn,
 	data,
-}: CreateLabelSchema): Promise<ActionResponse<Label>> {
+}: CreateLabelSchema): Promise<ActionResponse<string>> {
 	try {
-		const [label] = await db
-			.insert(labels)
-			.values({
-				name,
-				designedForId,
-				widthIn,
-				lengthIn,
-				data,
-			})
-			.returning();
+		const id = uuid();
+		await db.insert(labels).values({
+			id,
+			name,
+			designedForId,
+			widthIn,
+			lengthIn,
+			data,
+		});
 
 		revalidatePath("/editor");
-		return { success: true, data: label };
+		return { success: true, data: id };
 	} catch (error: any) {
 		return { success: false, message: (error as Error).message };
 	}
@@ -39,9 +39,9 @@ export async function updateLabelTemplate({
 	widthIn,
 	lengthIn,
 	data,
-}: UpdateLabelSchema): Promise<ActionResponse<Label>> {
+}: UpdateLabelSchema): Promise<ActionResponse<string>> {
 	try {
-		const [label] = await db
+		await db
 			.update(labels)
 			.set({
 				name,
@@ -50,11 +50,10 @@ export async function updateLabelTemplate({
 				lengthIn,
 				data,
 			})
-			.where(eq(labels.id, id))
-			.returning();
+			.where(eq(labels.id, id));
 
 		revalidatePath("/editor");
-		return { success: true, data: label };
+		return { success: true, data: id };
 	} catch (error: any) {
 		return { success: false, message: (error as Error).message };
 	}

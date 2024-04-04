@@ -37,10 +37,14 @@ export function PrinterForm(props: PrinterFormProps) {
 	async function onSubmit(values: CreatePrinterSchema) {
 		const result = await createPrinterAction(values);
 		if (result.success) {
-			toast("New printer successfully created!");
-			props.onCreate?.(result.data);
+			toast("New printer successfully created!", {
+				description: `Printer named "${values.name}" was created`,
+			});
+			props.onCreate?.(values as Printer);
 		} else {
-			toast("Failed to create printer. Please try again later");
+			toast("Failed to create printer. Please try again later", {
+				description: result.message,
+			});
 		}
 		form.reset({});
 	}
@@ -48,7 +52,11 @@ export function PrinterForm(props: PrinterFormProps) {
 	return (
 		<Form {...form}>
 			<form
-				onSubmit={form.handleSubmit(onSubmit)}
+				onSubmit={(e) => {
+					e.stopPropagation();
+					e.preventDefault();
+					onSubmit(form.getValues());
+				}}
 				className="flex flex-col gap-6"
 			>
 				<FormField
@@ -112,6 +120,7 @@ export function PrinterForm(props: PrinterFormProps) {
 					loading={isSubmitting}
 					loadingValue="Creating printer..."
 					className="mt-2"
+					type="submit"
 				>
 					Submit
 				</SubmitButton>

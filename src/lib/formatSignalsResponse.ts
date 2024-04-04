@@ -128,6 +128,14 @@ export interface SignalsResponse {
 
 export type FormattedSignalsResponse<T = unknown> = Record<string, T>[];
 
+function getFormattedCellValue(cell: SignalsCell) {
+	if (cell.type === "unit") return cell.content.display;
+	if (cell.type === "datetime")
+		return new Date(cell.content.value).toLocaleDateString();
+
+	return cell.content.value;
+}
+
 /**
  * Formats the response we get from signals to something easier to
  * interpret and work with
@@ -142,7 +150,9 @@ export function formatSignalsResponse(
 	for (const row of response.data) {
 		const normalizedRow: Record<string, unknown> = {};
 		for (const cell of row.attributes.cells)
-			normalizedRow[normalizeColumnName(cell.name)] = cell.content.value;
+			normalizedRow[normalizeColumnName(cell.name)] =
+				getFormattedCellValue(cell);
+
 		output.push(normalizedRow);
 	}
 

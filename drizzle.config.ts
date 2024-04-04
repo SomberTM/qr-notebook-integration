@@ -2,7 +2,7 @@ import { defineConfig } from "drizzle-kit";
 import * as dotenv from "dotenv";
 
 dotenv.config({
-	path: ".env.local",
+	path: ".env",
 });
 
 if (!process.env.CONNECTION_STRING)

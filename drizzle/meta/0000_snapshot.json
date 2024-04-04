@@ -1,0 +1,111 @@
+{
+  "id": "5423b769-4b3d-49f3-b22f-59bb083889b8",
+  "prevId": "00000000-0000-0000-0000-000000000000",
+  "version": "5",
+  "dialect": "pg",
+  "tables": {
+    "printers": {
+      "name": "printers",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "name": {
+          "name": "name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "ip": {
+          "name": "ip",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "dpi": {
+          "name": "dpi",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 203
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "labels": {
+      "name": "labels",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "name": {
+          "name": "name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "designed_for_id": {
+          "name": "designed_for_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "data": {
+          "name": "data",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false,
+          "default": []
+        },
+        "width_in": {
+          "name": "width_in",
+          "type": "real",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "length_in": {
+          "name": "length_in",
+          "type": "real",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "labels_designed_for_id_printers_id_fk": {
+          "name": "labels_designed_for_id_printers_id_fk",
+          "tableFrom": "labels",
+          "tableTo": "printers",
+          "columnsFrom": [
+            "designed_for_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    }
+  },
+  "enums": {},
+  "schemas": {},
+  "_meta": {
+    "columns": {},
+    "schemas": {},
+    "tables": {}
+  }
+}

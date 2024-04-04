@@ -51,7 +51,11 @@ export function PrintForm({ labels, data }: PrintFormProps) {
 	return (
 		<Form {...form}>
 			<form
-				onSubmit={form.handleSubmit(executePrintJob)}
+				onSubmit={(e) => {
+					e.stopPropagation();
+					e.preventDefault();
+					executePrintJob(form.getValues());
+				}}
 				className="flex flex-col items-center gap-2"
 			>
 				<div className="flex gap-2">
@@ -66,8 +70,7 @@ export function PrintForm({ labels, data }: PrintFormProps) {
 											onValueChange={(id) => {
 												const label = labels.find((label) => label.id === id);
 												if (!label) return;
-												const labelData = label.data as unknown[];
-												setEditors(populateLabels(labelData, data));
+												setEditors(populateLabels(label.data, data));
 												field.onChange(label);
 											}}
 										>

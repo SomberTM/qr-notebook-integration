@@ -27,7 +27,7 @@ export async function getDataFromEid(
 					"Signals endpoint not set in configuration. Please set SIGNALS_ENDPOINT environment variable.",
 			};
 
-		const url = new URL(`?eid=${eid}`, signalsBaseEndpoint);
+		const url = new URL(eid, signalsBaseEndpoint);
 		const response = await fetch(url);
 		if (!response.ok) {
 			throw new Error(`Error! Status: ${response.status}`);

@@ -3,7 +3,7 @@ import { createInsertSchema } from "drizzle-zod";
 import * as z from "zod";
 
 export const printers = pgTable("printers", {
-	id: uuid("id").primaryKey().defaultRandom(),
+	id: text("id").primaryKey().notNull(),
 	name: text("name").notNull(),
 	ip: text("ip").notNull(),
 	dpi: integer("dpi").notNull().default(203),

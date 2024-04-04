@@ -2,8 +2,6 @@
 
 import LabelEditor from "@/components/editor";
 import { LabelEditorSidebar } from "@/components/editor/sidebar";
-import Toolbar from "@/components/editor/toolbar";
-import { CanvasElement } from "@/components/editor/utils";
 import { Form, FormField } from "@/components/ui/form";
 import {
 	ResizablePanelGroup,
@@ -46,8 +44,10 @@ export function ClientLayout({ printers, labels }: ClientLayoutProps) {
 		const value = { ...values, data: JSON.stringify(values.data ?? []) };
 		const isUpdate = !!value.id;
 
+		console.log(value.data);
+
 		if (isUpdate)
-			result = await updateLabelTemplate(value as UpdateLabelSchema);
+			result = await updateLabelTemplate(value as unknown as UpdateLabelSchema);
 		else {
 			result = await createLabelTemplate(value as CreateLabelSchema);
 		}
@@ -56,16 +56,24 @@ export function ClientLayout({ printers, labels }: ClientLayoutProps) {
 			if (isUpdate) toast("Label template successfully updated!");
 			else {
 				toast("New label template successfully created!");
-				form.setValue("id", result.data.id);
+				form.setValue("id", result.data);
 			}
 		} else {
-			toast("Failed to save label template. Please try again later");
+			toast("Failed to save label template. Please try again later", {
+				description: result.message,
+			});
 		}
 	}
 
 	return (
 		<Form {...form}>
-			<form onSubmit={form.handleSubmit(onSubmit)}>
+			<form
+				onSubmit={(e) => {
+					e.stopPropagation();
+					e.preventDefault();
+					onSubmit(form.getValues());
+				}}
+			>
 				<ResizablePanelGroup direction="horizontal" className="min-h-[100dvh]">
 					<ResizablePanel
 						defaultSize={30}
