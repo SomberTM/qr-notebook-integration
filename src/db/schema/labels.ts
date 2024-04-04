@@ -9,7 +9,7 @@ const labelData = customType<{
 	driverData: string;
 }>({
 	dataType() {
-		return "varchar";
+		return "varchar(65535)";
 	},
 	toDriver(value) {
 		return JSON.stringify(value);
