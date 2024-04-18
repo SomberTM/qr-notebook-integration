@@ -44,8 +44,22 @@ export function PrintForm({ labels, data }: PrintFormProps) {
 		const stages = stageRefs.current.filter(
 			(ref) => ref != null
 		) as Konva.Stage[];
-		const allZpl = stages.map((stage) => base64ToZPL(stage.toDataURL()));
-		console.log(allZpl);
+		const allZpl: string[] = stages.map((stage) =>
+			base64ToZPL(stage.toDataURL())
+		);
+
+		// see https://supportcommunity.zebra.com/s/article/HTTP-Post-printing-sample?language=en_US
+		const target = `http://${values.label?.printer.ip}/pstprnt`;
+		const oneLargeZplCommand = allZpl.join("\n");
+
+		const request = new XMLHttpRequest();
+		request.open("POST", target, true);
+		request.setRequestHeader(
+			"Content-Length",
+			oneLargeZplCommand.length.toString()
+		);
+
+		request.send(oneLargeZplCommand);
 	}
 
 	return (

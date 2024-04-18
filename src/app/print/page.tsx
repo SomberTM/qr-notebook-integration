@@ -6,8 +6,12 @@ import { Label } from "@/components/ui/label";
 import db from "@/db";
 import { getDataFromEid } from "@/db/actions/signals";
 import { labels as labelsTable, printers as printersTable } from "@/db/schema";
+import { getSession } from "@/lib/auth";
 import { eq } from "drizzle-orm";
 import { redirect } from "next/navigation";
+
+import { signIn } from "next-auth/react";
+import { InitiateSignIn } from "@/components/initiate-sign-in";
 
 interface SearchParams {
 	eid: string;
@@ -19,6 +23,10 @@ export default async function Print({
 	searchParams: SearchParams;
 }) {
 	if (!searchParams.eid) redirect("/");
+
+	// broken
+	// const session = await getSession();
+	// if (!session) return <InitiateSignIn />;
 
 	const labels = await db
 		.select()
